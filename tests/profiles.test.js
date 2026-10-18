@@ -18,8 +18,8 @@ window.ASYNC_TESTS = window.ASYNC_TESTS || [];
       /* Réglages isolés par profil */
       let changes = 0;
       const off = Profiles.onChange(() => changes++);
-      const p2 = Profiles.create('  Anne-Lise   Dupont ');
-      check('profils : nom nettoyé', Profiles.list().find((p) => p.id === p2).name === 'Anne-Lise Dupont');
+      const p2 = Profiles.create('  Roberto   Dupont ');
+      check('profils : nom nettoyé', Profiles.list().find((p) => p.id === p2).name === 'Roberto Dupont');
       Profiles.switchTo(p2);
       check('profils : changement de profil signalé', changes === 1 && Profiles.activeId() === p2);
       check('profils : un nouveau profil part de zéro', Calibrator.load() === null && SignalPipeline.loadSaved().summary() === 'Dérive 1 Hz · Secteur 50 Hz · Passe-bas 40 Hz');
@@ -29,7 +29,7 @@ window.ASYNC_TESTS = window.ASYNC_TESTS || [];
       check('profils : réglages du profil 1 intacts', Calibrator.load().thresholds.blink === 33 && !SignalPipeline.loadSaved().isEnabled('eog') && Profiles.get('mentalBaseline') === null);
       Profiles.switchTo(p2);
       check('profils : réglages du profil 2 retrouvés', SignalPipeline.loadSaved().isEnabled('eog') && Profiles.get('mentalBaseline').date === '2026-10-07');
-      check('profils : étiquette de sujet BIDS', Profiles.label() === 'annelisedupont', Profiles.label());
+      check('profils : étiquette de sujet BIDS', Profiles.label() === 'robertodupont', Profiles.label());
 
       /* Persistance : relecture comme à la session suivante */
       Profiles._state = null;
@@ -39,7 +39,7 @@ window.ASYNC_TESTS = window.ASYNC_TESTS || [];
       /* Export / import */
       const exp = Profiles.exportProfile();
       const p3 = Profiles.importProfile(exp);
-      check('profils : export puis import (copie des réglages)', Profiles.list().find((p) => p.id === p3).name === 'Anne-Lise Dupont (importé)' && Profiles.get('pipeline', null, p3).enabled.eog === true);
+      check('profils : export puis import (copie des réglages)', Profiles.list().find((p) => p.id === p3).name === 'Roberto Dupont (importé)' && Profiles.get('pipeline', null, p3).enabled.eog === true);
       let err = '';
       try { Profiles.importProfile({ schema: 'autre' }); } catch (e) { err = e.message; }
       check('profils : fichier étranger refusé', /pas un profil/.test(err));
@@ -50,9 +50,9 @@ window.ASYNC_TESTS = window.ASYNC_TESTS || [];
       for (const s of await rec.listSamples({ all: true })) await rec.deleteSample(s.n);
       for (let p = 0; p < 300; p++) for (let c = 0; c < 4; c++) muse._emit('eeg', c, new Array(12).fill(c));
       const mine = await rec.createSample();
-      check('profils : échantillon rattaché au profil actif', mine.profile === p2 && mine.subject === 'annelisedupont');
+      check('profils : échantillon rattaché au profil actif', mine.profile === p2 && mine.subject === 'robertodupont');
       const full = await rec.getSample(mine.n);
-      check('profils : sujet BIDS = profil', Bids.files(full).some((f) => f.path.startsWith('sub-annelisedupont/eeg/')) && Bids.files(full).find((f) => f.path === 'participants.tsv').data.includes('sub-annelisedupont'));
+      check('profils : sujet BIDS = profil', Bids.files(full).some((f) => f.path.startsWith('sub-robertodupont/eeg/')) && Bids.files(full).find((f) => f.path === 'participants.tsv').data.includes('sub-robertodupont'));
       Profiles.switchTo('p1');
       check('profils : chaque profil ne voit que ses échantillons', (await rec.listSamples()).length === 0 && (await rec.listSamples({ all: true })).length === 1);
       await rec.reassignSamples(p2, 'p1');

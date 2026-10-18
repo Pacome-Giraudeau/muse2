@@ -4,7 +4,7 @@ Application web (HTML/JS pur, sans build ni dépendance) de projets autour du ca
 Un seul document (`index.html`) : la connexion Web Bluetooth survit aux changements de page (routes `#/…`).
 
 ## Commandes
-- `python serveur.py [--port N] [--sans-navigateur]` — lance l'app sur localhost ; écrit les échantillons dans `echantillons/` (API dans son en-tête).
+- `python serveur.py [--port N] [--sans-navigateur] [--pont [ADRESSE|simule]]` — lance l'app sur localhost ; écrit les échantillons dans `echantillons/` et le journal de séance dans `seances/` (API dans son en-tête). `--pont` : casque piloté par Python/bleak (`tools/pont_ble.py`, `pip install bleak`) ; `--pont simule` = faux casque pour tester sans matériel.
 - `python tools/check.py` — tests + chargement de toutes les pages (erreurs console). **À lancer avant de conclure.**
 - `python tools/shot.py "#/p/<id>" <fichier.png> [--js "…"] [--wait 4]` — capture + évaluation JS (temps réel). Écrire la capture hors du dépôt.
 - `python tools/sections.py docs/<page>.html [id] [--brut]` — plan d'une page de doc, ou une section (`--brut` : HTML numéroté, pour éditer).

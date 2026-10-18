@@ -145,7 +145,7 @@ Projets.register({
       pipeline.onSamples = (raw, clean) => clean.forEach((v, c) => { keep(buf[c], v); keep(rawBuf[c], raw[c]); });
       const feed = (c, s) => { if (c === 0) received += s.length; pipeline.feed(c, s); detector.feed(c, s); contact.feed(c, s); };
       const feedPpg = (c, s) => detector.feedPpg(c, s);
-      const bus = src === 'demo' ? simulator : muse, offs = [bus.on('eeg', feed), bus.on('ppg', feedPpg)];
+      const bus = src === 'demo' ? simulator : muse, offs = [bus.on('eeg', feed), bus.on('ppg', feedPpg), muse.on('resync', () => { pipeline.reset(); detector.resync(); })];
       unsubscribe = () => offs.forEach((off) => off());
       if (src === 'demo') { applyScenario(); simulator.start(); }
       render({ paused: true, reason: 'démarrage…' });

@@ -116,7 +116,7 @@ Projets.register({
       $('src-msg').textContent = src === 'demo'
         ? 'Démonstration : le simulateur fait les gestes à ta place. Rien n’est mémorisé dans ton profil.' : '';
       const feed = (c, s) => ctx.feed(c, s);
-      const bus = src === 'demo' ? sim : muse, offs = [bus.on('eeg', feed), bus.on('ppg', (c, s) => ctx.feedPpg(c, s))];
+      const bus = src === 'demo' ? sim : muse, offs = [bus.on('eeg', feed), bus.on('ppg', (c, s) => ctx.feedPpg(c, s)), muse.on('resync', () => ctx.resync())];
       unsubscribe = () => offs.forEach((off) => off());
       if (src === 'demo') sim.start();
       renderChoice();

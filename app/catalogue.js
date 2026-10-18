@@ -149,5 +149,13 @@ const CATALOGUE = {
       emoji: '🔎',
       script: 'dev/rapports/2026-10-08.js',
     },
+    {
+      id: 'rapport-2026-10-18',
+      date: '2026-10-18',
+      titre: 'Rapport critique n° 3 du 18 octobre 2026 : muse2 face à Muse-Realtime-Monitor',
+      description: 'Comparaison avec le petit projet Python Muse-Realtime-Monitor : où muse2 est plus rigoureux, ce qui lui manque (acquisition hors navigateur, journal de séance continu, bandes absolues avec historique), trous de paquets toujours non traités, périmètre en avance sur les essais réels. Pris en compte le 18 octobre 2026 : 3 corrigés, 2 partiellement, 1 non corrigé.',
+      emoji: '⚖️',
+      script: 'dev/rapports/2026-10-18.js',
+    },
   ],
 };

@@ -1,13 +1,15 @@
 /* Barre d'état du casque (globale `StatusBar`) : état de connexion, liaison Bluetooth, batterie, boutons.
  *
- *   new StatusBar(document.getElementById('statusbar'), muse, recorder);
+ *   new StatusBar(document.getElementById('statusbar'), muse, recorder, sessionLog);
  *
  * Affichée en permanence dans l'en-tête de l'application (voir app/shell.js). C'est ici qu'on connecte le casque.
  * Indice Bluetooth : 4 barres d'après le débit de paquets reçus (muse.link), pas la puissance radio (RSSI), que
  * Web Bluetooth ne fournit pas pour un appareil connecté. Vert = plein débit, orange = dégradé, rouge = très faible.
  * Mémoire (si `recorder` est fourni) : « ⏺ 30 s » = secondes de signal gardées ; clic = menu : téléchargements,
  * « Créer un échantillon » (ouvre l'aperçu ui/sample-dialog.js avant création) et liste des échantillons
- * (télécharger en EDF+, dossier BIDS .zip, CSV ou JSON ; supprimer).
+ * (télécharger en EDF+, dossier BIDS .zip, CSV ou JSON ; supprimer). Journal de séance (si `sessionLog`, lib/session-log.js) :
+ * lignes écrites et lieu (seances/ ou mémoire), téléchargement du CSV. Bouton « Connecter via Python » : seulement si
+ * `python serveur.py --pont` tourne (Muse.bridgeAvailable). Survol de la liaison : débit, coupures, paquets perdus.
  */
 class StatusBar {
   static STATE_LABEL = {
@@ -17,9 +19,10 @@ class StatusBar {
     reconnecting: 'Reconnexion…',
   };
 
-  constructor(container, muse, recorder = null) {
+  constructor(container, muse, recorder = null, sessionLog = null) {
     this.muse = muse;
     this.recorder = recorder;
+    this.log = sessionLog;
     container.innerHTML = `
       <span class="pill"><span class="dot" data-dot></span><span data-status>Non connecté</span></span>
       <span class="pill" data-bt title="Liaison Bluetooth">
@@ -39,9 +42,13 @@ class StatusBar {
           <button class="btn" data-sample>📌 Créer un échantillon</button>
           <p data-sample-msg></p>
           <ul class="samples" data-samples></ul>
+          <hr>
+          <p data-log-info></p>
+          <button class="btn ghost" data-log-dl>Journal de séance (CSV)</button>
         </div>
       </details>
       <button class="btn" data-connect>Connecter le Muse 2</button>
+      <button class="btn ghost" data-bridge hidden title="Le casque est piloté par Python (bleak), pas par le navigateur">Connecter via Python</button>
       <button class="btn ghost" data-disconnect hidden>Déconnecter</button>`;
     this.el = container;
     const q = (s) => container.querySelector(s);
@@ -54,12 +61,24 @@ class StatusBar {
         q('[data-status]').textContent = e.name === 'NotFoundError' ? 'Aucun casque choisi' : 'Échec : ' + (e.message || e);
       }
     };
+    q('[data-bridge]').onclick = async () => {
+      try {
+        await muse.connectBridge();
+      } catch (e) {
+        console.error(e);
+        q('[data-status]').textContent = 'Échec : ' + (e.message || e);
+      }
+    };
     q('[data-disconnect]').onclick = () => muse.disconnect();
+    this.bridge = false;
+    Muse.bridgeAvailable().then((ok) => {
+      this.bridge = ok;
+      q('[data-bridge]').hidden = !ok;
+      this._onState(muse.state, {});
+    });
+    q('[data-log-dl]').onclick = () => { if (this.log && this.log.name) StatusBar._save(this.log.csv(), this.log.name, 'text/csv'); };
 
-    if (!Muse.supported()) {
-      q('[data-connect]').disabled = true;
-      q('[data-status]').textContent = 'Web Bluetooth indisponible (utilise Chrome ou Edge)';
-    }
+    if (!Muse.supported()) q('[data-status]').textContent = 'Web Bluetooth indisponible (utilise Chrome ou Edge)';
 
     muse.on('state', (state, detail) => this._onState(state, detail));
     muse.on('telemetry', () => this._battery());
@@ -75,7 +94,15 @@ class StatusBar {
     setInterval(() => { this._link(); this._memory(); }, 1000);
   }
 
+  _logInfo() {
+    const l = this.log, el = this.el.querySelector('[data-log-info]');
+    this.el.querySelector('[data-log-dl]').disabled = !(l && l.name);
+    el.textContent = !l ? '' : !l.name ? 'Journal de séance : démarre à la connexion du casque (une ligne par seconde).'
+      : `Journal de séance : ${l.lines} ligne(s), ${l.where === 'serveur' ? 'écrites dans seances/' + l.name : 'gardées en mémoire (pas de serveur : télécharge-les)'}.`;
+  }
+
   _memory() {
+    this._logInfo();
     const r = this.recorder;
     if (!r) return;
     const s = Math.round(r.duration('eeg'));
@@ -155,6 +182,7 @@ class StatusBar {
     q('[data-status]').textContent = label;
     q('[data-dot]').className = 'dot' + (state === 'connected' ? ' on' : state === 'reconnecting' ? ' warn' : '');
     q('[data-connect]').disabled = state !== 'disconnected' || !Muse.supported();
+    q('[data-bridge]').disabled = state !== 'disconnected';
     q('[data-disconnect]').hidden = state === 'disconnected';
     this._link();
   }
@@ -170,7 +198,7 @@ class StatusBar {
     const tone = this.muse.state === 'reconnecting' ? 'warn' : bars === 4 ? 'good' : bars >= 2 ? 'mid' : bars === 1 ? 'bad' : 'none';
     bt.className = `pill bt bt-${tone} bars-${bars}`;
     bt.title = this.muse.connected
-      ? `Liaison Bluetooth : ${rate} paquets/s (${(ratio * 100).toFixed(0)} % du débit attendu), ${this.muse.stats.disconnects} coupure(s)`
+      ? `Liaison Bluetooth : ${rate} paquets/s (${(ratio * 100).toFixed(0)} % du débit attendu), ${this.muse.stats.disconnects} coupure(s), ${this.muse.stats.lost} paquet(s) perdu(s), ${this.muse.stats.resyncs} resynchronisation(s)`
       : 'Liaison Bluetooth : aucun flux';
   }
 }

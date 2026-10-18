@@ -130,7 +130,7 @@ Projets.register({
       root.querySelectorAll('input[name=src]').forEach((r) => (r.checked = r.value === src));
       $('src-msg').textContent = src === 'demo' ? 'Démonstration : le simulateur suit le point (son gain est un réglage, pas une mesure). Rien n’est mémorisé.' : '';
       const bus = src === 'demo' ? sim : muse;
-      const offs = [bus.on('eeg', (c, s) => { ctx.feed(c, s); meter.feed(c, s); if (rawBuf && (c === 1 || c === 2)) rawBuf[c === 1 ? 'af7' : 'af8'].push(...s); })];
+      const offs = [bus.on('eeg', (c, s) => { ctx.feed(c, s); meter.feed(c, s); if (rawBuf && (c === 1 || c === 2)) rawBuf[c === 1 ? 'af7' : 'af8'].push(...s); }), muse.on('resync', () => { ctx.resync(); meter.resync(); })];
       unsubscribe = () => offs.forEach((off) => off());
       if (src === 'demo') sim.start();
       panel = new CalibrationPanel($('calib'), runner, {

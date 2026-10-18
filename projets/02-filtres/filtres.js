@@ -101,7 +101,10 @@ Projets.register({
       root.querySelectorAll('input[name=src]').forEach((r) => (r.checked = r.value === src));
       const feed = (ch, s) => pipeline.feed(ch, s);
       if (src === 'demo') { unsubscribeSource = simulator.on('eeg', feed); simulator.start(); }
-      else unsubscribeSource = muse.on('eeg', feed);
+      else {
+        const offs = [muse.on('eeg', feed), muse.on('resync', () => pipeline.reset())];
+        unsubscribeSource = () => offs.forEach((off) => off());
+      }
       updateSourceMsg();
     }
 

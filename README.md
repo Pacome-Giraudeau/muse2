@@ -1,6 +1,20 @@
 ﻿# Muse 2 Lab
 
-**Muse 2 Lab** est une application web pour explorer, mesurer et comprendre les signaux du casque EEG **Muse 2** (4 électrodes EEG, pouls, mouvement). Tout tourne dans le navigateur (Web Bluetooth), sans installation ni dépendance : la connexion au casque reste ouverte d'un projet à l'autre.
+**Muse 2 Lab** est une application web pour explorer, mesurer et comprendre les signaux du casque EEG **Muse 2** (4 électrodes EEG, pouls, mouvement), en français. HTML / JavaScript pur, sans installation ni dépendance : la connexion au casque reste ouverte d'un projet à l'autre.
+
+> **Outil d'exploration et d'apprentissage, pas un dispositif médical.** Rien ici ne permet de diagnostiquer, soigner ou prévenir une affection. L'« état mental » (détendu / concentré / somnolent) est une estimation expérimentale par rapport à une référence personnelle, non validée cliniquement ; plusieurs fonctions n'ont pas encore été éprouvées sur le casque réel (la documentation le dit au cas par cas).
+
+## Démarrage en 3 étapes
+
+1. **Prérequis** : un casque Muse 2 chargé et allumé ; **Python 3** (seulement pour `serveur.py`, aucun paquet à installer) ; **Chrome ou Edge** (Web Bluetooth : ni Firefox ni Safari) avec le Bluetooth de l'ordinateur activé. Sans casque, le mode démonstration marche dans tous les navigateurs.
+2. **Lancer** : `python serveur.py` ouvre `http://localhost:8000`. Ouvrir `index.html` directement (`file://`) marche aussi, avec des limites (voir plus bas).
+3. **Connecter** : bouton « Connecter le Muse 2 » en haut à droite, choisir le casque dans la fenêtre du navigateur, puis ouvrir « Capteurs en direct ».
+
+Pas de Chrome, ou envie de séances sans surveillance ? `pip install bleak`, puis `python serveur.py --pont` : le casque est alors piloté par Python et le bouton « Connecter via Python » apparaît (`--pont simule` : faux casque pour essayer sans matériel).
+
+## Lancement et fichiers
+
+`python serveur.py` sert l'application sur `http://localhost:8000` (`--port N`, `--sans-navigateur`). Chaque échantillon est écrit automatiquement dans **`muse2/echantillons/`**, sans rien choisir, et le **journal de séance** (une ligne par seconde, bandes de fréquences absolues par électrode) dans **`muse2/seances/`**. En `file://`, il faut choisir le dossier `muse2/echantillons` une fois (le Bluetooth peut y être bloqué) et le journal reste en mémoire (téléchargeable depuis la barre d'état). Les échantillons gardés dans le navigateur sont propres à chaque adresse (`file://` et `localhost` ne partagent pas les mêmes) ; les profils sont stockés par `serveur.py` dans `profils/profils.json` (indépendants du port).
 
 ## Fonctionnalités
 
@@ -15,22 +29,17 @@
 - **Annotation** *(en travaux)* : jeu de test annoté pour mesurer le détecteur d'artefacts.
 - **Profils** : réglages, calibrations et échantillons par personne, export / import JSON.
 - **Mémoire du signal et échantillons** : les 30 dernières secondes toujours conservées, échantillons figés exportables en EDF+, BIDS-EEG, CSV, JSON (lisibles par MNE-Python, EEGLAB, FieldTrip, EDFbrowser).
+- **Journal de séance** : une ligne par seconde pendant toute la connexion (paquets perdus, reconnexions, puissance absolue des 5 bandes sur les 4 électrodes, signal brut), écrit dans `seances/` par `serveur.py` ou téléchargeable.
+- **Bandes absolues avec historique** : bascule Relatif (%) / Absolu (µV²) dans Capteurs en direct, mini-courbe des 60 dernières secondes par bande.
+- **Pont Python facultatif** *(non testé sur casque réel)* : `python serveur.py --pont` pilote le casque avec `bleak` (`pip install bleak`) et relaie les paquets au navigateur ; chaîne vérifiée seulement avec un faux casque.
 - **Mode démonstration** : signal simulé réaliste pour tout essayer sans casque.
 - **Documentation intégrée** : fonctionnement, référence technique, science, résultats, sources, rapports critiques.
-Projets autour du casque EEG Muse 2. Pur HTML/JS, sans build. **Lancement recommandé** (Chrome ou Edge) :
-
-```
-python serveur.py
-```
-
-Le navigateur s'ouvre sur `http://localhost:8000` et chaque échantillon est écrit automatiquement dans
-**`muse2/echantillons/`**, sans rien choisir. Ouvrir directement `index.html` (`file://`) marche aussi, mais il faut alors
-choisir le dossier `muse2/echantillons` une fois (et le Bluetooth peut y être bloqué). Les échantillons gardés
-dans le navigateur sont propres à chaque adresse (`file://` et `localhost` ne partagent pas les mêmes) ; les profils, eux, sont
-stockés avec `serveur.py` dans `profils/profils.json` (indépendants du port ; données personnelles, ne pas partager).
 
 ## Données personnelles
-Le dépôt ne contient **pas** les profils (`profils/profils.json`) ni les enregistrements EEG (`echantillons/sub-*`, `sourcedata`, `experience`, `participants.tsv`) : ils sont créés localement au premier lancement de `python serveur.py` et exclus par `.gitignore`.
+Le dépôt ne contient **pas** les profils (`profils/profils.json`), les enregistrements EEG (`echantillons/sub-*`, `sourcedata`, `experience`, `participants.tsv`) ni les journaux de séance (`seances/`) : ils sont créés localement par `python serveur.py` et exclus par `.gitignore`. Ne pas les partager.
+
+## Licence
+MIT : voir [LICENSE](LICENSE).
 
 ## Structure
 
@@ -66,6 +75,7 @@ muse2/
 │   ├── dynamic-calibration.js Calibration dynamique des seuils pendant le jeu                    → DynamicCalibration
 │   ├── gaze-model.js          Modèle du regard (attendu), mesure AF7 − AF8, analyse et verdict → GazeModel, GazeMeter
 │   ├── gaze-calibration.js    Calibration « Regard étalonné » (registre)                    → GazeCalibrator
+│   ├── session-log.js  Journal de séance continu (CSV, une ligne par seconde)             → SessionLog
 │   ├── server-dir.js   muse2/echantillons via serveur.py (imite un dossier choisi)        → ServerDir
 │   └── sample-folder.js Écriture / lecture des échantillons dans muse2/echantillons        → SampleFolder
 ├── ui/                 Composants d'interface réutilisables (conteneur DOM + objet de lib/)
@@ -95,13 +105,15 @@ muse2/
 │   └── 09-annotation/  Annotation : jeu de test annoté (gestes étiquetés) pour mesurer le détecteur
 ├── dev/                Section « Développement » de l'accueil
 │   ├── rapports.js     Rapports critiques : liste de tous les rapports établis
-│   └── rapports/       Un fichier par rapport critique daté (AAAA-MM-JJ.js) : 2026-10-07, 2026-10-08
-├── serveur.py          Lanceur : sert l'application et écrit les échantillons dans echantillons/
+│   └── rapports/       Un fichier par rapport critique daté (AAAA-MM-JJ.js) : 2026-10-07, 2026-10-08, 2026-10-18
+├── serveur.py          Lanceur : sert l'application, écrit les échantillons dans echantillons/ et le journal dans seances/ ; `--pont` : pont Bluetooth
+├── seances/            Journaux de séance CSV écrits par serveur.py (données personnelles, exclu du dépôt)
+├── LICENSE             Licence MIT
 ├── echantillons/       Échantillons enregistrés sur le disque (jeu de données BIDS) ; experience/<nom>/ = données brutes des expériences du projet Regard (signal.csv, meta.json)
 ├── docs/               Pages de documentation (HTML statique) : fonctionnement (vue d'ensemble), technique (référence détaillée, section Développement), science, resultats (expériences théorie vs réalité), sources ; sims.js = simulations
 ├── assets/             style.css (thème clair/sombre), docs.css (pages de doc)
 ├── tests/              index.html + *.test.js (sans casque) ; run_tests.py = lanceur en ligne de commande
-├── tools/              Outils de développement : check.py, shot.py, sections.py, entete.py, journal.py
+├── tools/              Outils de développement : check.py, shot.py, sections.py, entete.py, journal.py, pont_ble.py (pont Bluetooth facultatif)
 ├── .claude/            Réglages et commandes de Claude Code (/verifier, /maj-docs, /nouveau-projet)
 └── CLAUDE.md           Consignes pour Claude (+ un CLAUDE.md par dossier : lib, ui, projets, dev, docs, tests)
 ```
@@ -141,6 +153,11 @@ nommée `échantillon-N-AAAA-MM-JJ_HHhMM` (durée gardée au choix), conservée 
 avec `python serveur.py` (ou une fois le dossier choisi en `file://`), dans **`muse2/echantillons/`** sur le disque (voir `echantillons/LISEZMOI.md`). Format aligné sur la norme **BIDS-EEG** ;
 exports **EDF+**, dossier **BIDS** (.zip), CSV et JSON — lisibles par EDFbrowser, MNE-Python, EEGLAB, FieldTrip…
 
+Le **journal de séance** (`lib/session-log.js`) complète cette mémoire : tant que le casque est connecté, une ligne CSV par
+seconde (temps UTC, paquets perdus, note reconnexion / resync / trou, puissance absolue en µV² des 5 bandes sur les 4
+électrodes, calculée sur le signal brut sans rejet d'artefact). Avec `python serveur.py` il s'écrit en ajout dans `seances/` ;
+sans serveur il reste en mémoire (~5 h) et se télécharge depuis le menu ⏺. Il n'est pas relu par la page Étude.
+
 ## Règles
 
 - **Un projet = un dossier** `projets/NN-nom/`, référencé dans `app/catalogue.js` et chargé à la demande par `app/shell.js`.
@@ -173,4 +190,5 @@ Troisième section de l'accueil (route `#/dev/<id>`), à part des projets.
 |---|---|
 | `dev/rapports.js` | Rapports critiques : liste de tous les rapports établis, du plus récent au plus ancien, avec un lien vers chacun |
 | `dev/rapports/2026-10-07.js` | Rapport critique du 7 octobre 2026 : architecture, cohérence scientifique et technique, constats par gravité, mesure en direct de l'effet de la piste clignements, recommandations ; suivi (statut et solution choisie de chaque constat, pris en compte le 8 octobre 2026) |
+| `dev/rapports/2026-10-18.js` | Rapport critique n°3 du 18 octobre 2026 : muse2 comparé à Muse-Realtime-Monitor, 6 constats (C1 acquisition hors navigateur, C2 journal continu, C3 bandes absolues, C4 trous de paquets, C5 périmètre, C6 README/licence) ; C1, C2, C3, C4 et C6 traités le 18 octobre 2026, C5 non traité |
 | `dev/rapports/2026-10-08.js` | Rapport critique n°2 du 8 octobre 2026 : revue par lecture du code (sans casque), vérification des corrections du 1er rapport, 10 constats nouveaux non traités (T4, S10 hautes), mesure en direct de l'écart d'instant causé par un trou de paquets |

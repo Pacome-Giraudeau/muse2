@@ -7,7 +7,8 @@
 - Chaque nouveau comportement : un test dans `tests/*.test.js` (voir `tests/CLAUDE.md`).
 
 Repères :
-- `muse.js` : événements `muse.on('eeg' | 'ppg' | 'accel' | 'gyro' | 'telemetry' | 'state' | 'gap')` ; `muse.link`, `muse.stats` (dont `lost`, `resyncs`) ; paquets EEG testables via `muse._onEegPacket(canal, dataView)`.
+- `muse.js` : événements `muse.on('eeg' | 'ppg' | 'accel' | 'gyro' | 'telemetry' | 'state' | 'gap' | 'resync')` ; `muse.link`, `muse.stats` (dont `lost`, `resyncs`) ; paquets EEG testables via `muse._onEegPacket(canal, dataView)`. Toute brique qui apparie les 4 canaux par rang (pipeline, détecteur, GazeMeter, CalibrationContext) DOIT se remettre à zéro sur `'resync'` (`reset()` / `resync()`). Deux sources de paquets, mêmes décodeurs (`_route`) : Web Bluetooth (`connect`) ou pont Python (`connectBridge`).
+- `session-log.js` : journal de séance continu (1 ligne/s, bandes absolues par électrode, brut) ; envoi en ajout par `serveur.py` (`seances/`), sinon mémoire.
 - `signal.js` : `Signal.onePoleCoef(fc, rate)` / `Signal.smoothCoef(tauS, rate)` pour tout filtre ou lissage d'ordre 1 (ne pas réécrire la formule).
 - `filters.js` : `SignalPipeline` (6 étapes, `processOffline` compense le retard du FIR des clignements), réglages partagés `pipe.save()` / `SignalPipeline.loadSaved()` (profil actif).
 - `artifacts.js` : seuils personnels via `calibration.js` (jamais de constantes devinées) ; `detectOffline` pour un enregistrement.

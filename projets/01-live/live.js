@@ -53,7 +53,12 @@ Projets.register({
         <div class="panel"><h2>Capteurs et contact</h2><div id="headmap"></div></div>
         <div class="panel">
           <h2>Bandes de fréquences <span class="flag" id="polluted" hidden>pollué par un artefact</span></h2>
+          <div class="toolbar"><span class="seg" id="bands-mode">
+            <button type="button" data-v="relative">Relatif (%)</button>
+            <button type="button" data-v="absolute">Absolu (µV²)</button>
+          </span></div>
           <div id="bands"></div>
+          <p class="hint" id="bands-hint"></p>
         </div>
         <div class="panel"><h2>Artefacts</h2><div id="artifacts"></div></div>
         <div class="panel"><h2>Calibration</h2><div id="calibration"></div></div>
@@ -97,10 +102,32 @@ Projets.register({
         <canvas id="eeg${i}"></canvas>
       </div>`).join('');
 
+    // Bandes : part de chaque bande (relatif, somme = 100 %) ou puissance absolue (µV², échelle log), avec les 60 dernières
+    // secondes en dessous. L'absolu montre si c'est la bande qui bouge ou le total : en relatif, un delta gonflé par un
+    // clignement fait « baisser » l'alpha sans que l'alpha ait changé.
+    const BAND_HISTORY = 240;                 // 240 mises à jour × 250 ms = 60 s
+    const bandHist = { relative: Signal.BANDS.map(() => []), absolute: Signal.BANDS.map(() => []) };
+    let bandsMode = Profiles.get('liveBands', 'relative') === 'absolute' ? 'absolute' : 'relative';
+    const absPos = (p) => Math.max(0, Math.min(1, (Math.log10(Math.max(p, 1e-9)) + 1) / 5)); // 0,1 µV² → 0 ; 10 000 µV² → 1
+    const fmtAbs = (p) => (p < 10 ? p.toFixed(2) : p < 1000 ? p.toFixed(0) : p.toExponential(1)) + ' µV²';
     $('bands').innerHTML = Signal.BANDS.map((b, i) => `
       <div class="bar"><span>${b.name}</span>
       <div class="track"><div class="fill" id="band${i}" style="background:${b.color}"></div></div>
-      <span class="val" id="bandv${i}">–</span></div>`).join('');
+      <span class="val" id="bandv${i}">–</span></div>
+      <canvas class="spark" id="spark${i}"></canvas>`).join('');
+    const showBandsMode = () => {
+      root.querySelectorAll('#bands-mode button').forEach((b) => b.classList.toggle('on', b.dataset.v === bandsMode));
+      $('bands-hint').textContent = bandsMode === 'relative'
+        ? 'Part de chaque bande dans le total (1–45 Hz), moyenne des électrodes affichées.'
+        : 'Puissance de chaque bande, moyenne des électrodes affichées ; barre en échelle logarithmique (0,1 à 10 000 µV²).';
+    };
+    root.querySelectorAll('#bands-mode button').forEach((b) => (b.onclick = () => {
+      bandsMode = b.dataset.v;
+      Profiles.set('liveBands', bandsMode);
+      showBandsMode();
+      drawBands();
+    }));
+    showBandsMode();
 
     const artifactPanel = new ArtifactPanel($('artifacts'), detector);
     const calibrationPanel = new CalibrationPanel($('calibration'), calibrator);
@@ -151,12 +178,39 @@ Projets.register({
     function updateBands() {
       const ready = shown().filter((b) => b.length >= 256);
       if (!ready.length) return;
-      const sum = Signal.BANDS.map(() => 0);
+      const rel = Signal.BANDS.map(() => 0), abs = Signal.BANDS.map(() => 0);
       // DSP de Welch sur les 2 dernières secondes (3 segments de 256 points ; 1 seul tant que < 384 points)
-      ready.forEach((b) => Signal.bandPowersFromPsd(Signal.welch(b.slice(-512))).forEach((p, i) => (sum[i] += p / ready.length)));
-      sum.forEach((p, i) => {
-        $('band' + i).style.width = (p * 100).toFixed(0) + '%';
-        $('bandv' + i).textContent = (p * 100).toFixed(0) + '%';
+      ready.forEach((b) => {
+        const spec = Signal.welch(b.slice(-512));
+        Signal.bandPowersFromPsd(spec).forEach((p, i) => (rel[i] += p / ready.length));
+        Signal.BANDS.forEach((band, i) => (abs[i] += Signal.powerBetween(spec, band.range[0], band.range[1]) / ready.length));
+      });
+      Signal.BANDS.forEach((_, i) => {
+        for (const [k, v] of [['relative', rel], ['absolute', abs]]) {
+          bandHist[k][i].push(v[i]);
+          if (bandHist[k][i].length > BAND_HISTORY) bandHist[k][i].shift();
+        }
+      });
+      drawBands();
+    }
+
+    function drawBands() {
+      const hist = bandHist[bandsMode];
+      Signal.BANDS.forEach((band, i) => {
+        const h = hist[i];
+        if (!h.length) return;
+        const now = h[h.length - 1];
+        $('band' + i).style.width = ((bandsMode === 'relative' ? now : absPos(now)) * 100).toFixed(0) + '%';
+        $('bandv' + i).textContent = bandsMode === 'relative' ? (now * 100).toFixed(0) + '%' : fmtAbs(now);
+        // historique : relatif 0 → plus grande part de la période ; absolu en échelle log, la même que la barre
+        const ctx = fit($('spark' + i)), w = ctx.canvas.width, ht = ctx.canvas.height;
+        const top = bandsMode === 'relative' ? Math.max(0.05, ...h) : 1, y = (v) => ht - 2 - (ht - 4) * ((bandsMode === 'relative' ? v : absPos(v)) / top);
+        ctx.clearRect(0, 0, w, ht);
+        ctx.strokeStyle = band.color;
+        ctx.lineWidth = Math.max(1, devicePixelRatio || 1);
+        ctx.beginPath();
+        h.forEach((v, k) => (k ? ctx.lineTo((k / (BAND_HISTORY - 1)) * w, y(v)) : ctx.moveTo(0, y(v))));
+        ctx.stroke();
       });
     }
 
@@ -196,6 +250,7 @@ Projets.register({
       muse.on('ppg', (c, s) => { if (c === 1) push(ppgBuf, s, 256); detector.feedPpg(c, s); }),
       muse.on('accel', (a) => { pose.accel(a); ['x', 'y', 'z'].forEach((k) => ($('a' + k).textContent = a[k].toFixed(2))); }),
       muse.on('gyro', (g) => { pose.gyro(g); ['x', 'y', 'z'].forEach((k) => ($('g' + k).textContent = g[k].toFixed(1))); }),
+      muse.on('resync', () => { pipeline.reset(); detector.resync(); }), // trou de paquets non comblé : canaux réalignés
       muse.on('state', (state) => { if (state === 'connected') { detector.reset(); contact.reset(); pipeline.reset(); pose.reset(); } }),
     ];
 

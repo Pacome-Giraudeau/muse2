@@ -30,7 +30,9 @@ const Projets = {
   Profiles.init(); // avant tout le reste : les briques lisent les réglages du profil actif
   const muse = new Muse();
   const recorder = new SignalRecorder(muse); // enregistre en continu, quelle que soit la page
-  new StatusBar(document.getElementById('statusbar'), muse, recorder);
+  const sessionLog = new SessionLog(muse); // journal continu : en mémoire, puis écrit dans seances/ si le serveur répond
+  ServerDir.detect().then((dir) => { if (dir) sessionLog.setSink(SessionLog.serverSink()); });
+  new StatusBar(document.getElementById('statusbar'), muse, recorder, sessionLog);
   // Qualité de contact suivie en permanence, pour le bouton « Capteurs » du bandeau
   const contact = new ContactQuality();
   muse.on('eeg', (c, s) => contact.feed(c, s));

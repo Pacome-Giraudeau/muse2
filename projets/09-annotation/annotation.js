@@ -130,7 +130,7 @@ Projets.register({
       detector = ArtifactDetector.forProfile();
       detections = [];
       detector.onEvent = (e) => { const d = Annotation.detectionFrom(e); if (d) detections.push(d); };
-      offs = [bus.on('eeg', (c, s) => detector.feed(c, s)), bus.on('ppg', (c, s) => detector.feedPpg(c, s))];
+      offs = [bus.on('eeg', (c, s) => detector.feed(c, s)), bus.on('ppg', (c, s) => detector.feedPpg(c, s)), muse.on('resync', () => detector.resync())];
       session = new Annotation.Session({ delayMs: Number($('delay').value) || 0 });
       $('setup').hidden = true; $('review').hidden = true; $('run').hidden = false;
       $('miss').hidden = mode !== 'forced';

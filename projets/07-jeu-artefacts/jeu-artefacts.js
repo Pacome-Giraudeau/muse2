@@ -78,7 +78,7 @@ Projets.register({
       root.querySelectorAll('input[name=src]').forEach((r) => (r.checked = r.value === src));
       $('src-msg').textContent = src === 'demo' ? 'Démonstration : le simulateur joue à ta place. Rien n’est mémorisé.' : '';
       const feed = (c, s) => ctx.feed(c, s);
-      const bus = src === 'demo' ? sim : muse, offs = [bus.on('eeg', feed), bus.on('ppg', (c, s) => ctx.feedPpg(c, s))];
+      const bus = src === 'demo' ? sim : muse, offs = [bus.on('eeg', feed), bus.on('ppg', (c, s) => ctx.feedPpg(c, s)), muse.on('resync', () => ctx.resync())];
       unsub = () => offs.forEach((off) => off());
       if (src === 'demo') sim.start();
       newStage();

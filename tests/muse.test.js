@@ -48,11 +48,13 @@
   muse._onEegPacket(0, packet(0));     // 65535 -> 0 : paquet suivant, pas de trou
   check('muse : séquence qui recule = resynchro ; 65535 -> 0 sans trou', muse.stats.lost === 12 && muse.stats.resyncs === 1 && gaps[gaps.length - 1][1] === 0, JSON.stringify(muse.stats));
 
+  muse._resetSequences();              // (re)connexion : les départs communs du resync précédent sont oubliés
+  for (let c = 0; c < 4; c++) muse._onEegPacket(c, packet(300));
   const n0 = counts[1];
-  muse._onEegPacket(1, packet(105)); // doublon : ignoré
+  muse._onEegPacket(1, packet(300)); // doublon : ignoré
   check('muse : paquet en double ignoré', counts[1] === n0);
 
-  muse._onEegPacket(1, packet(105 + 1 + 100)); // 100 paquets perdus (> ~1 s)
+  muse._onEegPacket(1, packet(300 + 1 + 100)); // 100 paquets perdus (> ~1 s)
   check('muse : long trou non comblé, signalé', gaps[gaps.length - 1][2] === false && gaps[gaps.length - 1][1] === 100 && counts[1] === n0 + 12 && muse.stats.resyncs === 2 && muse.stats.lost === 112, JSON.stringify(gaps[gaps.length - 1]));
 
   muse._resetSequences();
@@ -77,3 +79,62 @@
   q2.feed(0, Array.from({ length: 512 }, (_, i) => 2 * Math.sin((2 * Math.PI * 10 * i) / 256)));
   check('contact : signal réel très faible noté suspect', q2.levels[0].label === 'suspect', JSON.stringify(q2.levels[0]));
 })();
+
+// Trou non comblé : « resync » + départ commun, les 4 canaux restent alignés (rampe : la valeur dit l'instant)
+(function () {
+  const ramp = (seq) => {
+    const b = new Uint8Array(20);
+    b[0] = seq >> 8; b[1] = seq & 0xff;
+    for (let i = 0; i < 12; i++) {
+      const raw = (seq * 12 + i) % 4096, bit = 16 + i * 12, byte = bit >> 3;
+      if (bit % 8 === 0) { b[byte] = raw >> 4; b[byte + 1] = (b[byte + 1] & 0x0f) | ((raw & 0x0f) << 4); }
+      else { b[byte] = (b[byte] & 0xf0) | (raw >> 8); b[byte + 1] = raw & 255; }
+    }
+    return new DataView(b.buffer);
+  };
+  const muse = new Muse(), pipe = new SignalPipeline(), resyncs = [], rows = [];
+  muse.on('eeg', (c, s) => pipe.feed(c, s));
+  muse.on('resync', (r) => { resyncs.push(r); pipe.reset(); });
+  pipe.onSamples = (raw) => rows.push(raw.map((ch) => ch.slice()));
+  muse._resetSequences();
+  for (let p = 1; p <= 200; p++) {                       // AF7 (1) perd les paquets 21 à 120 : 100 paquets, > ~1 s
+    for (let c = 0; c < 4; c++) if (!(c === 1 && p > 20 && p <= 120)) muse._onEegPacket(c, ramp(p));
+  }
+  const aligned = rows.every((r) => r[0].every((v, i) => v === r[1][i] && v === r[2][i] && v === r[3][i]));
+  const last = rows[rows.length - 1];
+  check('muse : « resync » émis une fois, avec le départ commun', resyncs.length === 1 && resyncs[0].canal === 1 && resyncs[0].perdus === 100 && resyncs[0].depart === 122, JSON.stringify(resyncs));
+  check('muse : 4 canaux alignés après un long trou (pipeline remis à zéro au resync)', aligned && rows.length > 10, 'lignes ' + rows.length);
+  check('muse : le flux reprend jusqu’au dernier paquet', last && last[0][last[0].length - 1] === ((200 * 12 + 11) % 4096 - 2048) * 0.48828125);
+
+  const m2 = new Muse(), seen = [0, 0, 0, 0];
+  m2.on('eeg', (c, s) => (seen[c] += s.length));
+  m2._resetSequences();
+  for (let c = 0; c < 4; c++) m2._onEegPacket(c, ramp(10));
+  m2._onEegPacket(2, ramp(10 + 200));                    // AF8 saute de 199 paquets, les autres sont restés à 10
+  check('muse : un canal en avance au resync garde son paquet (départ = ce numéro)', seen[2] === 24 && m2._skipUntil[2] === null && m2._skipUntil[0] === 210, seen.join(',') + ' ' + JSON.stringify(m2._skipUntil));
+  m2._onEegPacket(0, ramp(11));                          // antérieur au départ : écarté, aucun comblement
+  check('muse : un paquet antérieur au départ commun est écarté', seen[0] === 12 && m2.stats.resyncs === 1);
+  m2._onEegPacket(0, ramp(210));
+  check('muse : le canal reprend au départ commun', seen[0] === 24 && m2._skipUntil[0] === null);
+})();
+
+// Pont Python : aiguillage des notifications brutes et détection du serveur (sans réseau)
+window.ASYNC_TESTS = window.ASYNC_TESTS || [];
+window.ASYNC_TESTS.push((async () => {
+  const muse = new Muse(), eeg = [], acc = [], bat = [], ppg = [];
+  muse.on('eeg', (c, s) => eeg.push([c, s.length]));
+  muse.on('accel', (a) => acc.push(a));
+  muse.on('telemetry', (t) => bat.push(t));
+  muse.on('ppg', (c, s) => ppg.push([c, s.length]));
+  const dv = (n) => new DataView(new Uint8Array(n).buffer);
+  muse._route(0x0005, dv(20));  // EEG canal 2
+  muse._route(0x000a, dv(20));  // accéléromètre : 3 échantillons
+  muse._route(0x000b, dv(20));  // télémétrie
+  muse._route(0x0010, dv(20));  // PPG canal 1
+  muse._route(0x0007, dv(20));  // caractéristique inconnue : ignorée
+  check('muse : _route aiguille EEG, accéléromètre, télémétrie, PPG', eeg.length === 1 && eeg[0][0] === 2 && eeg[0][1] === 12 && acc.length === 3 && bat.length === 1 && ppg.length === 1 && ppg[0][0] === 1, JSON.stringify([eeg, acc.length, bat.length, ppg]));
+  const ok = await Muse.bridgeAvailable(async () => ({ ok: true, json: async () => ({ disponible: true }) }));
+  const non = await Muse.bridgeAvailable(async () => ({ ok: true, json: async () => ({ disponible: false }) }));
+  const err = await Muse.bridgeAvailable(async () => { throw new Error('réseau'); });
+  check('muse : bridgeAvailable lit /api/pont/etat (vrai, faux, injoignable)', ok === true && non === false && err === false);
+})().catch((e) => check('muse : pont, exécution sans erreur', false, e.stack || e.message)));
