@@ -1,5 +1,22 @@
 ﻿# Muse 2 Lab
 
+**Muse 2 Lab** est une application web pour explorer, mesurer et comprendre les signaux du casque EEG **Muse 2** (4 électrodes EEG, pouls, mouvement). Tout tourne dans le navigateur (Web Bluetooth), sans installation ni dépendance : la connexion au casque reste ouverte d'un projet à l'autre.
+
+## Fonctionnalités
+
+- **Guide d'installation** : placement du casque, voyants, vérification du contact en direct, dépannage.
+- **Capteurs en direct** : EEG, bandes de fréquences, qualité de contact par électrode, détection d'artefacts (clignements, sourcils, mâchoire, bâillements, regards), mouvement, orientation de la tête en 3D, pouls (PPG), qualité de la liaison.
+- **Amélioration du signal** : six pistes activables (Hampel, filtres, correction des clignements EOG, référence moyenne commune…), tracé brut / amélioré, spectre, effet mesuré.
+- **État mental** *(en travaux)* : détendu / concentré / somnolent / neutre, par rapport à une référence personnelle.
+- **Étude d'échantillon** : visualisation, spectre, spectrogramme, statistiques, artefacts et états repérés automatiquement, export.
+- **Calibration** : calibrations séparées ou enchaînées dans une calibration générale ludique, défi des gestes.
+- **Jeu des artefacts** : course à 3 couloirs pilotée par le regard et les clignements, qui affine les seuils en jouant.
+- **Regard** *(en travaux)* : théorie de l'œil-dipôle contre signal réel AF7 − AF8.
+- **Annotation** *(en travaux)* : jeu de test annoté pour mesurer le détecteur d'artefacts.
+- **Profils** : réglages, calibrations et échantillons par personne, export / import JSON.
+- **Mémoire du signal et échantillons** : les 30 dernières secondes toujours conservées, échantillons figés exportables en EDF+, BIDS-EEG, CSV, JSON (lisibles par MNE-Python, EEGLAB, FieldTrip, EDFbrowser).
+- **Mode démonstration** : signal simulé réaliste pour tout essayer sans casque.
+- **Documentation intégrée** : fonctionnement, référence technique, science, résultats, sources, rapports critiques.
 Projets autour du casque EEG Muse 2. Pur HTML/JS, sans build. **Lancement recommandé** (Chrome ou Edge) :
 
 ```
