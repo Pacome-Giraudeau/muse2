@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comprendre la science – Muse 2 Lab</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body>
+<article class="doc-page">
+<h1>Comprendre la science</h1>
+<p class="lead">Ce qui se passe physiquement entre ta tête et l'écran, et pourquoi l'application traite les signaux comme elle le fait.
+La page suit le chemin du signal, en cinq étapes ; chaque section commence par un résumé « En bref » et se termine, quand c'est utile, par les endroits de l'application où la notion intervient.</p>
+
+<nav class="journey" aria-label="Le chemin du signal">
+  <a href="#p1"><span>1</span>D'où vient le signal</a>
+  <a href="#p2"><span>2</span>Du casque à l'écran</a>
+  <a href="#p3"><span>3</span>Traiter le signal</a>
+  <a href="#p4"><span>4</span>Reconnaître ce qui ne vient pas du cerveau</a>
+  <a href="#p5"><span>5</span>Interpréter, avec prudence</a>
+</nav>
+
+<div class="callout"><b>Comment lire cette page.</b> Les cadres <b>Simulation</b> se manipulent : ils utilisent le vrai code de l'application.
+Les chiffres entre crochets, comme <a href="sources.html#r5">[5]</a>, renvoient aux <a href="sources.html">Sources</a>. Pour le code, voir la <a href="technique.html">documentation technique</a>.</div>
+
+<div class="callout warn"><b>Un casque grand public n'est pas un appareil médical.</b> Rien ici ne permet de diagnostiquer quoi que ce soit.
+Les détections d'artefacts, les bandes de fréquences et les états mentaux sont des estimations, utiles pour explorer et expérimenter.</div>
+
+<nav class="toc toc-parts">
+  <div><b><a href="#p1">1. D'où vient le signal</a></b><a href="#eeg">1. Ce que mesure un EEG</a><a href="#electrodes">2. Les électrodes du Muse 2</a><a href="#pose">3. Bien poser le casque, lire les voyants</a><a href="#contact">4. La qualité de contact</a><a href="#ppg">5. Le pouls (PPG)</a><a href="#mouvement">6. Accéléromètre et gyroscope</a></div>
+  <div><b><a href="#p2">2. Du casque à l'écran</a></b><a href="#numerisation">7. Numériser le signal</a><a href="#bluetooth">8. Le Bluetooth</a><a href="#memoire">9. Garder les 30 dernières secondes</a><a href="#formats">10. Des formats que tout le monde sait lire</a></div>
+  <div><b><a href="#p3">3. Traiter le signal</a></b><a href="#filtres">11. Les filtres numériques</a><a href="#spectre">12. Spectre, bandes et spectrogramme</a><a href="#ameliorer">13. Améliorer le signal : six remèdes</a></div>
+  <div><b><a href="#p4">4. Reconnaître ce qui ne vient pas du cerveau</a></b><a href="#artefacts">14. Qu'est-ce qu'un artefact ?</a><a href="#yeux">15. Les yeux : clignements et regards</a><a href="#muscles">16. Les muscles : sourcils, mâchoire, bâillements</a><a href="#calibration">17. Calibrer la détection</a><a href="#annotation">18. Mesurer le détecteur : annoter des gestes</a></div>
+  <div><b><a href="#p5">5. Interpréter, avec prudence</a></b><a href="#alpha">19. Ton rythme alpha : yeux fermés et fréquence personnelle</a><a href="#etat">20. Peut-on lire un état mental ?</a><a href="#limites">21. Ce qu'on peut (et ne peut pas) conclure</a></div>
+</nav>
+
+<div class="part-head" id="p1"><span>Étape 1 sur 5</span><div class="part-title">D'où vient le signal</div><p>Du cerveau à la peau, puis aux capteurs du casque.</p></div>
+
+<h2 id="eeg"><span class="num">1</span> Ce que mesure un EEG</h2>
+<p class="brief"><b>En bref.</b> L'EEG mesure, en microvolts, la somme de l'activité électrique de milliers de neurones synchronisés, atténuée par le crâne et la peau.</p>
+<p>Les neurones communiquent par des courants électriques minuscules. Quand des milliers de neurones voisins (surtout les neurones pyramidaux du cortex, orientés perpendiculairement à la surface) s'activent
+<em>de façon synchrone</em>, leurs courants s'additionnent et créent un champ électrique assez grand pour traverser le liquide céphalo-rachidien, le crâne et la peau <a href="sources.html#r3">[3]</a><a href="sources.html#r4">[4]</a>.
+Un électroencéphalogramme (EEG) mesure la <strong>différence de potentiel</strong> entre une électrode posée sur la peau et une électrode de référence. Cette différence se compte en <strong>microvolts (µV)</strong> :
+quelques dizaines de µV pour l'activité cérébrale au repos, des milliers de fois moins qu'une pile.</p>
+<p>Le crâne et la peau étalent et affaiblissent le signal : chaque électrode « voit » une moyenne de grandes zones du cortex, pas un neurone. C'est aussi pour cela que le signal est fragile, facilement noyé par tout ce qui n'est pas du cerveau (voir <a href="#artefacts">les artefacts</a>).</p>
+<p>Hans Berger a enregistré le premier EEG humain en 1929 et y a repéré un rythme régulier autour de 10 Hz, aujourd'hui appelé <em>alpha</em> <a href="sources.html#r1">[1]</a>.</p>
+
+<h2 id="electrodes"><span class="num">2</span> Les électrodes du Muse 2</h2>
+<p class="brief"><b>En bref.</b> Quatre électrodes sèches (deux au front, deux derrière les oreilles) et une référence au front : une vue partielle du cerveau, sans l'arrière de la tête.</p>
+<p>Le Muse 2 a <strong>4 électrodes EEG</strong> plus une référence <a href="sources.html#r6">[6]</a>. Leurs noms viennent du système international 10-20 et de son extension, qui place les électrodes à des proportions fixes de la distance nez-nuque et oreille-oreille <a href="sources.html#r2">[2]</a> :</p>
+<table>
+  <tr><th>Nom</th><th>Emplacement</th><th>Ce qu'elle capte surtout</th></tr>
+  <tr><td>AF7 / AF8</td><td>front, à gauche / à droite (antéro-frontal)</td><td>activité frontale, mais aussi les yeux (très proches) et le muscle frontal</td></tr>
+  <tr><td>TP9 / TP10</td><td>derrière l'oreille gauche / droite (temporo-pariétal)</td><td>activité temporale, mais aussi le muscle temporal (mâchoire)</td></tr>
+  <tr><td>référence</td><td>front, au centre (Fpz)</td><td>point de comparaison pour les 4 autres</td></tr>
+</table>
+<p><strong>Limite importante :</strong> aucune électrode n'est sur le sommet ni à l'arrière de la tête (régions centrales, pariétales, occipitales). Or le rythme alpha est le plus ample à l'arrière.
+Avec seulement 4 électrodes placées au front et aux tempes, le Muse voit une version limitée de l'activité cérébrale. Des études montrent qu'il peut quand même capter certaines réponses cérébrales (potentiels évoqués) si on moyenne beaucoup d'essais <a href="sources.html#r5">[5]</a>.</p>
+<p><strong>Électrodes sèches.</strong> Contrairement à l'EEG de laboratoire (gel conducteur), le contact est direct sur la peau, avec une impédance plus élevée. Une impédance élevée augmente le bruit, surtout aux basses fréquences et dans un environnement chaud et humide <a href="sources.html#r8">[8]</a><a href="sources.html#r9">[9]</a>.
+C'est pourquoi la qualité de contact (<a href="#contact">section 4</a>) est surveillée.</p>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/guide" target="_top">Guide d'installation</a>.</p>
+
+<h2 id="pose"><span class="num">3</span> Bien poser le casque, lire les voyants</h2>
+<p class="brief"><b>En bref.</b> La qualité du signal se joue à la pose : cheveux dégagés, bande au milieu du front, serrage égal des deux côtés, puis 30 à 60 s d'attente.</p>
+<p>Presque toute la qualité d'un enregistrement se joue à la pose. Les consignes du fabricant <a href="sources.html#r28">[28]</a> correspondent chacune à une raison physique :</p>
+<table>
+  <tr><th>Consigne</th><th>Pourquoi</th></tr>
+  <tr><td>Aucun cheveu entre le capteur et la peau</td><td>Le cheveu est isolant : il augmente l'impédance de contact, donc le bruit <a href="sources.html#r8">[8]</a>.</td></tr>
+  <tr><td>Bande au milieu du front, ni trop haut ni trop bas</td><td>Les électrodes AF7/AF8 doivent être à leur place nominale du système 10-20 <a href="sources.html#r2">[2]</a>. Trop bas, elles captent davantage les muscles des sourcils et les yeux ; trop haut, elles touchent les cheveux.</td></tr>
+  <tr><td>Serrage ferme et égal des deux côtés</td><td>Un contact qui bouge produit des artefacts de mouvement ; un contact inégal fausse la comparaison gauche/droite (par exemple pour les regards).</td></tr>
+  <tr><td>Essuyer la peau avec un mouchoir humide</td><td>Une peau légèrement humide conduit mieux : l'impédance baisse. À l'inverse, une peau grasse ou une crème isolent.</td></tr>
+  <tr><td>Attendre 30 à 60 secondes après un réglage</td><td>Le contact d'une électrode sèche se stabilise avec le temps (pression, humidité, chaleur de la peau) ; mesurer trop tôt donne un signal instable.</td></tr>
+</table>
+<p>Les explications de la colonne « Pourquoi » sont des raisonnements physiques usuels ; seule la consigne elle-même provient du fabricant.</p>
+<h3>Les voyants du boîtier</h3>
+<p>Les voyants (diodes électroluminescentes, ou LED) du boîtier ne servent qu'à informer : lumières bleues qui défilent = le casque cherche une connexion Bluetooth ; au deuxième appui sur le bouton, le nombre de voyants allumés indique la batterie <a href="sources.html#r28">[28]</a>.
+Il ne faut pas les confondre avec les <strong>trois diodes du capteur de pouls</strong>, placées contre la peau : elles émettent de la lumière infrarouge et rouge pour la photopléthysmographie (<a href="#ppg">section 5</a>) ; leur longueur d'onde (730, 660 et 850 nm d'après la fiche technique <a href="sources.html#r6">[6]</a>) détermine la profondeur et le type de signal mesuré. Les motifs de voyants autres que ceux cités ci-dessus ne sont pas documentés ici.</p>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/guide" target="_top">Guide d'installation</a>.</p>
+
+<h2 id="contact"><span class="num">4</span> La qualité de contact</h2>
+<p class="brief"><b>En bref.</b> Un bon contact donne un signal d'amplitude modeste et stable ; l'application note chaque électrode avec le vocabulaire de Muse.</p>
+<p>Idéalement on mesure l'<strong>impédance</strong> de chaque électrode (la « difficulté » du courant à passer entre peau et électrode). Ici l'application ne la mesure pas ; elle utilise un indicateur indirect : la <strong>valeur efficace (rms)</strong> du signal sur la dernière seconde, en médiane sur 5 s.</p>
+<ul>
+  <li>Un bon contact donne un signal d'amplitude modeste (typiquement 10 à 50 µV).</li>
+  <li>Un mauvais contact donne de grosses dérives, des parasites du secteur et parfois la saturation (±1000 µV) <a href="sources.html#r8">[8]</a>.</li>
+  <li>Un signal quasi nul (&lt; 0,5 µV) signifie qu'aucun contact n'est établi.</li>
+  <li>Un signal présent mais <strong>trop faible</strong> (moins de 3 µV) est « suspect » : ce n'est pas un excellent contact. Une électrode qui mesure presque la même chose que la référence voit une différence presque nulle : c'est le cas d'un <strong>pont électrique</strong> (gel, sueur ou électrodes qui se touchent), un défaut bien connu des enregistrements à gel <a href="sources.html#r49">[49]</a>, ou d'un canal bloqué. L'électrode est alors notée en rouge et écartée des calculs. Le seuil de 3 µV est une estimation, pas encore vérifiée sur le casque réel.</li>
+</ul>
+<h3>Et chez Muse ?</h3>
+<p>L'appli officielle affiche un « fer à cheval » de quatre pastilles : <strong>pleine</strong> = bon contact, <strong>contour</strong> = contact faible, <strong>vide</strong> = pas de contact. Le kit de développement Muse expose la même information en chiffres : 1 = bon, 2 = moyen, 4 = mauvais (≥ 3 = mauvais), mis à jour 10 fois par seconde, ainsi qu'un indicateur « strict » oui/non par électrode <a href="sources.html#r29">[29]</a>.
+En revanche, <strong>la façon dont Muse calcule ces notes n'est pas publiée</strong>. La seule indication publique est générale : un bon signal brut varie peu, hormis les clignements. L'application reprend donc le vocabulaire et l'affichage de Muse, avec sa propre mesure (rms, médiane sur 5 s).
+Pour comparaison, un brevet d'une autre société (Daqri) décrit une méthode voisine fondée sur la variabilité de la dérivée du signal, avec des seuils fixés expérimentalement et non publiés <a href="sources.html#r30">[30]</a> : ce n'est pas la méthode de Muse.</p>
+<p>Les seuils (vert, orange, rouge) sont des estimations à ajuster. Un geste (mâchoire serrée) peut aussi gonfler temporairement la valeur : d'où la médiane.</p>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/guide" target="_top">Guide d'installation</a>, <a href="../index.html#/p/live" target="_top">Capteurs en direct</a>, le bouton « Capteurs » du bandeau.</p>
+
+<h2 id="ppg"><span class="num">5</span> Le pouls (PPG)</h2>
+<p class="brief"><b>En bref.</b> Une diode éclaire la peau ; la lumière renvoyée varie d'environ 1 % à chaque battement de cœur.</p>
+<p>La <strong>photopléthysmographie</strong> <a href="sources.html#r24">[24]</a> éclaire la peau avec une diode et mesure la lumière qui revient. Le sang absorbe la lumière : à chaque battement, le volume de sang dans les petits vaisseaux de la peau augmente puis diminue, ce qui module légèrement la lumière reçue.
+Le signal est donc une composante pulsée (la composante « AC », au rythme du cœur) posée sur un niveau lent (la « DC »).</p>
+<p>Le Muse 2 a un capteur à trois longueurs d'onde, échantillonné à 64 Hz <a href="sources.html#r6">[6]</a>. Les canaux sont nommés ambiant, infrarouge et rouge dans la bibliothèque <em>muse-js</em> <a href="sources.html#r7">[7]</a> ; l'application trace l'infrarouge (plus pénétrant) après retrait de la composante lente.
+L'onde est <em>affichée</em>, et son activité sert aussi d'indice d'appoint pour les froncements (voir <a href="#muscles">Les muscles</a>) ; calculer une fréquence cardiaque (en repérant les pics) est une évolution possible.</p>
+
+<div class="sim" id="sim-ppg" data-sim="ppg"><h4>Simulation : voir le pouls dans la lumière</h4></div>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/live" target="_top">Capteurs en direct</a>.</p>
+
+<h2 id="mouvement"><span class="num">6</span> Accéléromètre et gyroscope</h2>
+<p class="brief"><b>En bref.</b> Deux petits capteurs mesurent l'inclinaison et la rotation de la tête : utiles pour repérer les mouvements.</p>
+<p>Deux capteurs microscopiques (MEMS) échantillonnés à 52 Hz <a href="sources.html#r6">[6]</a> :</p>
+<ul>
+  <li>l'<strong>accéléromètre</strong> (±2 g) mesure l'accélération <em>y compris la gravité</em> : immobile, il indique ~1 g vers le bas, ce qui renseigne sur l'inclinaison de la tête ;</li>
+  <li>le <strong>gyroscope</strong> (±250 °/s) mesure la vitesse de rotation.</li>
+</ul>
+<p>Ils servent à savoir si la tête bouge (donc si l'EEG risque d'être pollué par le mouvement).</p>
+<h3 id="orientation">Orientation de la tête : filtre complémentaire</h3>
+<p class="brief"><b>En bref.</b> Le gyroscope suit les rotations rapides mais dérive ; l'accéléromètre donne la verticale sans dérive mais est brouillé par les mouvements : on combine les deux.</p>
+<ul>
+  <li>Le <strong>gyroscope</strong> donne des vitesses angulaires ; en les intégrant on obtient les angles, bien suivis à court terme, mais les petites erreurs (biais) s'accumulent : dérive.</li>
+  <li>L'<strong>accéléromètre</strong> mesure la direction de la gravité, donc l'inclinaison (pitch = atan2(−ax, √(ay²+az²)), roll = atan2(ay, az)) sans dérive, mais bruitée dès que la tête accélère.</li>
+  <li><strong>Filtre complémentaire</strong> (méthode classique, <a href="sources.html#r52">[52]</a>) : pitch et roll sont recalés lentement sur la gravité (constante de temps 1 s), seulement quand la norme de l'accélération reste entre 0,8 et 1,2 g. Le biais du gyroscope est estimé tant que la vitesse reste faible (&lt; 3 °/s).</li>
+  <li>Le <strong>lacet (yaw)</strong>, rotation gauche/droite, n'a pas de référence absolue sans boussole : il vient du seul gyroscope et dérive lentement ; « Recentrer » le remet à 0.</li>
+</ul>
+<p><strong>Limites.</strong> Intégration par angles d'Euler simples : correcte pour des mouvements de tête modérés, blocage de cardan possible près de ±90° de pitch. Le repère des axes du capteur est <strong>supposé</strong> (x vers le nez, y vers l'oreille gauche, z vers le haut) et <strong>non vérifié sur le casque réel</strong> : la tête peut pencher du mauvais côté (il faudrait alors inverser un axe). Le rendu n'a été testé qu'avec des signaux synthétiques et des captures sans casque, pas avec un casque connecté.</p>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/live" target="_top">Capteurs en direct</a>.</p>
+
+<div class="part-head" id="p2"><span>Étape 2 sur 5</span><div class="part-title">Du casque à l'écran</div><p>Transformer la tension en nombres, les transmettre, les garder.</p></div>
+
+<h2 id="numerisation"><span class="num">7</span> Numériser le signal</h2>
+<p class="brief"><b>En bref.</b> 256 mesures par seconde sur 12 bits : fréquences représentables jusqu'à 128 Hz, avec un pas de 0,49 µV.</p>
+<p>Le casque transforme la tension en nombres : <strong>256 mesures par seconde</strong> (256 Hz), chacune codée sur <strong>12 bits</strong> <a href="sources.html#r6">[6]</a><a href="sources.html#r7">[7]</a>.</p>
+<ul>
+  <li><strong>Résolution :</strong> 12 bits = 4096 niveaux. L'application convertit : µV = (valeur brute − 2048) × 0,48828125. Un pas vaut donc 0,488 µV et l'étendue est d'environ ±1000 µV. Au-delà, le signal « sature ».</li>
+  <li><strong>Fréquence maximale :</strong> d'après le théorème d'échantillonnage <a href="sources.html#r10">[10]</a>, 256 Hz permet de représenter des fréquences jusqu'à 128 Hz (la moitié, dite fréquence de Nyquist). Une fréquence plus élevée, si elle n'était pas filtrée avant, serait repliée vers les basses fréquences (<em>repliement</em>, ou <em>aliasing</em>).</li>
+  <li><strong>Transmission :</strong> les mesures sont envoyées par paquets de 12 échantillons par électrode, soit 4 × 256 ÷ 12 ≈ <strong>85 paquets par seconde</strong>. Ce chiffre sert à juger la qualité de la liaison Bluetooth (<a href="#bluetooth">section 8</a>).</li>
+</ul>
+<p>Les filtres analogiques et numériques appliqués à l'intérieur du casque avant l'envoi ne sont pas documentés dans ce projet ; la fiche technique d'InteraXon <a href="sources.html#r6">[6]</a> est la référence.</p>
+
+<div class="sim" id="sim-sampling" data-sim="sampling"><h4>Simulation : échantillonnage, repliement et résolution</h4></div>
+
+<h2 id="bluetooth"><span class="num">8</span> Le Bluetooth</h2>
+<p class="brief"><b>En bref.</b> Le signal voyage par paquets autour de 2,4 GHz ; un paquet perdu laisse un trou, et le corps absorbe ces ondes.</p>
+<p>Le casque utilise le <strong>Bluetooth Low Energy</strong> (BLE), conçu pour envoyer peu de données avec peu d'énergie <a href="sources.html#r25">[25]</a>. Il émet autour de <strong>2,4 GHz</strong>, une bande partagée avec le Wi-Fi, les micro-ondes et de nombreux appareils, et il saute d'un canal à l'autre pour éviter les interférences.
+Le navigateur y accède par l'API Web Bluetooth <a href="sources.html#r26">[26]</a> : le casque « notifie » chaque nouveau paquet.</p>
+<h3>Pourquoi ça se coupe</h3>
+<ul>
+  <li><strong>Le corps absorbe les ondes à 2,4 GHz</strong> (l'eau les absorbe) : si l'ordinateur est derrière toi ou si ta main ou ton corps s'interpose, le signal s'affaiblit.</li>
+  <li><strong>Interférences</strong> : Wi-Fi 2,4 GHz, autres appareils Bluetooth, USB 3 mal blindé près du récepteur.</li>
+  <li><strong>Distance</strong> et obstacles ; adaptateur ou pilote Bluetooth de l'ordinateur ; batterie faible du casque.</li>
+</ul>
+<h3>L'indice Bluetooth de l'application</h3>
+<p>Web Bluetooth ne donne pas la puissance radio d'un appareil déjà connecté. L'indice se base donc sur le <strong>débit réellement reçu</strong> comparé au débit attendu (~85 paquets/s) :</p>
+<table>
+  <tr><th>Débit reçu</th><th>Barres</th></tr>
+  <tr><td>&gt; 90 %</td><td>4 (vert)</td></tr>
+  <tr><td>&gt; 70 %</td><td>3 (orange)</td></tr>
+  <tr><td>&gt; 40 %</td><td>2 (orange)</td></tr>
+  <tr><td>&gt; 0 %</td><td>1 (rouge)</td></tr>
+  <tr><td>0 % ou reconnexion</td><td>0 (gris) / clignotant orange pendant la reconnexion</td></tr>
+</table>
+
+<h3>Un paquet perdu : combler le trou sans tricher</h3>
+<p>Chaque paquet EEG porte un <strong>numéro de séquence</strong> (un compteur sur 2 octets, propre à chaque électrode) <a href="sources.html#r7">[7]</a>. Un saut dans la numérotation dit combien de paquets manquent. Sans ce contrôle, un canal qui perd un paquet prendrait 12 échantillons (47 ms) de retard sur les trois autres, sans que rien ne le signale ; or plusieurs calculs comparent les électrodes entre elles (regards : AF7 − AF8 ; référence moyenne).</p>
+<p>L'application comble donc un court trou (jusqu'à ~1 s) en répétant la dernière valeur reçue : les canaux restent alignés. Elle ne met pas de « valeur manquante » (NaN) : les filtres récursifs propagent une telle valeur indéfiniment. Au-delà d'une seconde, rien n'est inventé : le trou est signalé et la numérotation repart. Le palier reste visible dans le signal ; ce comportement n'a pas encore été observé sur le casque réel.</p>
+<div class="sim" id="sim-bluetooth" data-sim="bluetooth"><h4>Simulation : paquets perdus et indice Bluetooth</h4></div>
+<p class="in-app"><b>Dans l'application</b> : l'indice Bluetooth du bandeau, <a href="../index.html#/p/live" target="_top">Capteurs en direct</a>.</p>
+
+<h2 id="memoire"><span class="num">9</span> Garder les 30 dernières secondes</h2>
+<p class="brief"><b>En bref.</b> Les 30 dernières secondes de signal brut sont gardées en continu, horodatées, et conservées dans le navigateur.</p>
+<p>L'application garde en permanence les 30 dernières secondes de signal <strong>brut</strong>, telles que le casque les a envoyées, sans aucun filtre. Le brut est la seule version qu'on peut toujours retraiter plus tard avec d'autres réglages ; un signal filtré a perdu de l'information pour toujours.</p>
+<ul>
+  <li><strong>Volume</strong> : 30 s × (4 canaux EEG × 256 Hz + 3 canaux PPG × 64 Hz + 6 axes de mouvement × 52 Hz) ≈ 45 000 valeurs, environ 500 Ko avec les horodatages. C’est peu : la mémoire du navigateur suffit largement.</li>
+  <li><strong>Mémoire glissante</strong> : un tampon « circulaire » écrase la plus vieille valeur à chaque nouvelle ; la taille ne grandit jamais.</li>
+  <li><strong>Horodatage</strong> : le casque n'envoie pas l'heure de chaque mesure. On connaît l'heure d'arrivée de chaque paquet Bluetooth et la fréquence d'échantillonnage (256 Hz = une mesure toutes les 3,9 ms) : on en déduit l'heure de chaque échantillon. La précision <em>absolue</em> est limitée par la latence de la radio (quelques dizaines de millisecondes), mais l'écart entre deux échantillons successifs est exact.</li>
+  <li><strong>Persistance</strong> : les données sont écrites toutes les 2 secondes dans la base de données du navigateur (IndexedDB <a href="sources.html#r36">[36]</a>). Elles restent sur l'ordinateur : rien n'est envoyé sur Internet.</li>
+  <li><strong>Échantillons</strong> : la mémoire glisse sans cesse ; pour garder un moment précis (une expérience, un geste à analyser), on en crée une <em>copie figée</em> nommée <code>échantillon-1-date</code>, <code>échantillon-2-date</code>… La date dans le nom permet de retrouver quand la mesure a été prise ; le signal reste brut, donc réanalysable plus tard avec n'importe quel réglage.</li>
+</ul>
+<p class="in-app"><b>Dans l'application</b> : le menu « ⏺ » du bandeau.</p>
+
+<h2 id="formats"><span class="num">10</span> Des formats que tout le monde sait lire</h2>
+<p class="brief"><b>En bref.</b> Les échantillons suivent les standards de l'EEG (BIDS, EDF+) pour être lisibles par les logiciels de la communauté.</p>
+<p>Un enregistrement n'a de valeur que s'il peut être relu, comparé et partagé, y compris dans dix ans et avec d'autres logiciels. La communauté EEG s'est dotée pour cela de deux standards, que l'application suit :</p>
+<ul>
+  <li><strong>EDF+</strong> (European Data Format « plus ») <a href="sources.html#r38">[38]</a><a href="sources.html#r39">[39]</a> : un fichier binaire simple et ouvert pour les signaux physiologiques. Un en-tête décrit chaque signal (nom, unité, étendue physique, filtres déjà appliqués), puis les données suivent par blocs d'une seconde. Chaque signal garde sa propre fréquence (256 Hz pour l'EEG, 64 Hz pour le pouls…). Des <em>annotations</em> horodatées portent les événements (ici : clignements, regards, interruptions du flux).</li>
+  <li><strong>BIDS</strong> (Brain Imaging Data Structure) <a href="sources.html#r37">[37]</a><a href="sources.html#r40">[40]</a> : une façon normalisée de <em>ranger et décrire</em> les données (noms de dossiers et de fichiers, fiches JSON, tableaux TSV). Un logiciel qui connaît BIDS sait où trouver la fréquence d'échantillonnage, la référence, les filtres appliqués, le type et l'unité de chaque canal, et les événements, sans aucune explication supplémentaire.</li>
+</ul>
+<h3>Ce que coûte un format standard</h3>
+<ul>
+  <li><strong>Résolution</strong> : EDF stocke chaque valeur sur 16 bits (65 536 niveaux). Sur l'étendue du Muse 2 (±1000 µV), cela fait un pas de 0,03 µV : seize fois plus fin que le casque lui-même (12 bits, 0,49 µV). Aucune information n'est perdue.</li>
+  <li><strong>Grille de temps régulière</strong> : EDF suppose un échantillonnage parfaitement régulier. Si le Bluetooth a perdu des paquets, le trou est comblé par la valeur la plus proche et <strong>signalé</strong> par un événement « interruption_flux », pour qu'aucune analyse ne le prenne pour du vrai signal.</li>
+  <li><strong>Brut ou filtré</strong> : le standard impose de dire quels filtres ont été appliqués (« SoftwareFilters »). Enregistrer le brut reste préférable : on peut toujours filtrer plus tard, jamais « défiltrer ».</li>
+  <li><strong>Référence</strong> : chaque tension EEG se mesure par rapport à un point de comparaison, qu'il faut déclarer (« EEGReference ») <a href="sources.html#r37">[37]</a>. Pour le brut, c'est l'électrode de référence du casque (Fpz) ; si l'on enregistre après la référence moyenne commune, chaque canal est rapporté à la moyenne des 4 électrodes et la fiche indique « average ».</li>
+</ul>
+<p class="in-app"><b>Dans l'application</b> : le menu « ⏺ » du bandeau, <a href="../index.html#/p/etude" target="_top">Étude d'échantillon</a>.</p>
+
+<div class="part-head" id="p3"><span>Étape 3 sur 5</span><div class="part-title">Traiter le signal</div><p>Nettoyer le signal et y lire les rythmes.</p></div>
+
+<h2 id="filtres"><span class="num">11</span> Les filtres numériques</h2>
+<p class="brief"><b>En bref.</b> Un filtre garde certaines fréquences et en atténue d'autres ; ceux de l'application sont simples et rapides, au prix d'un léger retard.</p>
+<p>Un filtre garde certaines fréquences et en atténue d'autres. L'application en utilise deux, très simples, de type « moyenne mobile exponentielle » <a href="sources.html#r11">[11]</a>.</p>
+<div class="formula">b ← b + α · (x − b)  &nbsp;&nbsp;avec&nbsp;&nbsp; α = 1 − e<sup>−2π · f<sub>c</sub> / f<sub>e</sub></sup></div>
+<ul>
+  <li><strong>Passe-bas</strong> : la valeur <em>b</em> suit lentement <em>x</em> ; elle ne garde que ce qui varie plus lentement que la fréquence de coupure <em>f<sub>c</sub></em> (<em>f<sub>e</sub></em> = 256 Hz). Utilisé à 10 Hz pour isoler la forme d'un clignement, et à 15 Hz pour séparer le « rapide » du « lent ».</li>
+  <li><strong>Passe-haut</strong> : <em>x − b</em>, c'est-à-dire le signal moins sa partie lente. Utilisé à 0,1 Hz pour retirer la dérive et le décalage continu (qui peut atteindre des centaines de µV et n'a aucun intérêt ici).</li>
+  <li><strong>Enveloppe</strong> : la valeur absolue du signal rapide, lissée sur ~60 ms, mesure « combien ça s'agite ». C'est la mesure de l'activité musculaire.</li>
+</ul>
+<p>Compromis : ces filtres sont très simples (1<sup>er</sup> ordre) donc peu sélectifs, et ils retardent un peu le signal. Suffisant pour détecter des événements, pas pour de la mesure scientifique fine.</p>
+
+<div class="sim" id="sim-filter" data-sim="filter"><h4>Simulation : que garde un filtre ?</h4></div>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/filtres" target="_top">Amélioration numérique du signal</a>.</p>
+
+<h2 id="spectre"><span class="num">12</span> Spectre, bandes et spectrogramme</h2>
+<p class="brief"><b>En bref.</b> La transformée de Fourier décompose le signal en fréquences : on en tire la part de chaque bande (delta à gamma) et, au fil du temps, le spectrogramme.</p>
+<p>Un signal d'EEG est un mélange d'oscillations lentes et rapides. La <strong>transformée de Fourier</strong> les sépare et dit « combien d'énergie à chaque fréquence ». L'application l'obtient avec l'algorithme <strong>FFT</strong> <a href="sources.html#r12">[12]</a> sur <strong>1 seconde</strong> de signal (256 points) :</p>
+<ul>
+  <li>1 seconde de signal donne une résolution de <strong>1 Hz</strong> (on distingue 10 Hz de 11 Hz, pas 10 Hz de 10,5 Hz).</li>
+  <li>Avant la FFT, on multiplie le signal par une <strong>fenêtre de Hann</strong> qui l'atténue aux bords pour limiter les « fuites » d'énergie d'une fréquence vers ses voisines <a href="sources.html#r13">[13]</a>.</li>
+  <li>On additionne l'énergie dans chaque bande, puis on normalise : l'affichage donne la <strong>part relative</strong> de chaque bande (somme = 100 %) sur 1 à 45 Hz (on s'arrête avant le 50 Hz du secteur).</li>
+</ul>
+<table>
+  <tr><th>Bande</th><th>Fréquences</th><th>Associations classiques (à ne pas sur-interpréter)</th></tr>
+  <tr><td>Delta</td><td>1–4 Hz</td><td>sommeil profond ; en éveil, souvent des artefacts (yeux, mouvements)</td></tr>
+  <tr><td>Theta</td><td>4–8 Hz</td><td>somnolence, mémoire de travail, méditation</td></tr>
+  <tr><td>Alpha</td><td>8–13 Hz</td><td>éveil calme, yeux fermés ; baisse à l'ouverture des yeux <a href="sources.html#r1">[1]</a><a href="sources.html#r15">[15]</a></td></tr>
+  <tr><td>Bêta</td><td>13–30 Hz</td><td>éveil actif, concentration ; très contaminé par les muscles</td></tr>
+  <tr><td>Gamma</td><td>30–45 Hz</td><td>très contaminé par les muscles sur le cuir chevelu <a href="sources.html#r18">[18]</a><a href="sources.html#r19">[19]</a></td></tr>
+</table>
+<h3>Le spectrogramme : le spectre au fil du temps</h3>
+<p>Un spectre résume une fenêtre entière ; il ne dit pas <em>quand</em> chaque rythme était présent. Le <strong>spectrogramme</strong> calcule un spectre sur une fenêtre courte (1 s) qui glisse le long du signal, et les empile : le temps en abscisse, la fréquence en ordonnée, la puissance en couleur. On y voit par exemple une bande lumineuse vers 10 Hz quand l'alpha est présent, et des taches en bas (basses fréquences) à chaque clignement. Le compromis est celui de la <a href="#spectre">section 12</a> : une fenêtre plus courte suit mieux le temps mais distingue moins bien les fréquences (1 s de fenêtre = 1 Hz de résolution).</p>
+<p>Les limites exactes des bandes varient selon les auteurs. Et l'estimation sur une seule seconde est <strong>très bruyante</strong> : les barres bougent beaucoup. La méthode de Welch <a href="sources.html#r14">[14]</a> réduit ce bruit en moyennant plusieurs fenêtres ; elle n'est pas (encore) utilisée ici.
+Enfin, une activité musculaire pollue les hautes fréquences : c'est pourquoi le panneau affiche « pollué par un artefact » quand un geste est détecté.</p>
+
+<div class="sim" id="sim-spectrum" data-sim="spectrum"><h4>Simulation : composer un signal et lire son spectre</h4></div>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/filtres" target="_top">Amélioration numérique du signal</a>, <a href="../index.html#/p/etude" target="_top">Étude d'échantillon</a>.</p>
+
+<h2 id="ameliorer"><span class="num">13</span> Améliorer le signal : six remèdes</h2>
+<p class="brief"><b>En bref.</b> Chaque défaut connu (pics, dérive, secteur, bruit rapide, clignements, bruit commun) a son remède numérique — et son coût.</p>
+<p>Les réglages choisis dans ce projet sont mémorisés et repris par l'interrupteur « Amélioration numérique » de Capteurs en direct. Celui-ci n'améliore que l'<em>affichage</em> : la qualité de contact et la détection d'artefacts restent mesurées sur le signal brut, sur lequel leurs seuils ont été établis — filtrer avant de les mesurer changerait ce qu'ils voient (un passe-haut, par exemple, déforme la bosse d'un clignement).</p>
+<p>Pour expérimenter sur un vrai signal (ou le signal de démonstration), ouvre le projet <a href="../index.html#/p/filtres" target="_top">Amélioration numérique du signal</a>.</p>
+<p>Aucun traitement ne rattrape un mauvais contact : il faut d'abord bien poser le casque (<a href="#pose">section 3</a>). Ensuite, chaque défaut connu du signal a son remède numérique. Le projet « Amélioration numérique du signal » permet de les activer un par un et d'en <strong>mesurer</strong> l'effet. Chaque remède a aussi un coût.</p>
+<table>
+  <tr><th>Défaut</th><th>Remède</th><th>Principe physique / mathématique</th><th>Coût</th></tr>
+  <tr><td>Pics isolés (choc, faux contact)</td><td>Filtre de Hampel</td><td>Statistique <em>robuste</em> : la médiane et l'écart absolu médian (MAD) d'une fenêtre ne sont presque pas influencés par une valeur aberrante. Un échantillon trop éloigné de la médiane (k × 1,4826 × MAD ; le facteur 1,4826 rend le MAD comparable à un écart-type pour un bruit gaussien) est remplacé par elle <a href="sources.html#r32">[32]</a>.</td><td>Peut écrêter un vrai pic très bref ; réduit d’environ 3 % l’amplitude du bruit normal (mesuré en test).</td></tr>
+  <tr><td>Décalage continu et dérive lente (sueur, pression, polarisation de l'électrode)</td><td>Passe-haut</td><td>Ces variations sont bien plus lentes que l'activité cérébrale étudiée (&lt; 0,5 Hz) : un filtre qui coupe sous 0,5 à 2 Hz les retire.</td><td>Retire aussi l'activité cérébrale très lente (delta profond) ; déforme un peu la forme des ondes lentes (clignements).</td></tr>
+  <tr><td>Parasite du réseau électrique</td><td>Coupe-bande (notch)</td><td>Le secteur oscille à une fréquence fixe et connue (50 Hz en Europe, 60 Hz en Amérique du Nord) : un filtre très étroit (Q = 25, soit ~2 Hz de large) la supprime presque sans toucher le reste. L'harmonique (100 Hz) est aussi retirée.</td><td>Un trou étroit dans le spectre ; négligeable pour l'EEG.</td></tr>
+  <tr><td>Bruit rapide, activité musculaire</td><td>Passe-bas</td><td>L'EEG utile du Muse est surtout sous 40 Hz ; au-delà, c'est majoritairement du muscle <a href="sources.html#r18">[18]</a>. Un Butterworth d'ordre 4 atténue d'environ 24 dB par octave au-delà de la coupure.</td><td>Fait disparaître le gamma (&gt; 30–40 Hz) ; adoucit les fronts rapides.</td></tr>
+  <tr><td>Clignements</td><td>Régression adaptative</td><td>Principe de <em>l'annulation adaptative de bruit</em> <a href="sources.html#r33">[33]</a> : une « référence » corrélée au parasite (ici la moyenne lente des deux électrodes frontales, très proches des yeux) est pondérée puis soustraite de chaque canal ; le poids s'ajuste tout seul (algorithme LMS normalisé) pour minimiser le résidu. C'est la même idée que la régression EOG classique, qui utilise d'habitude des électrodes placées autour des yeux <a href="sources.html#r34">[34]</a> ; le Muse n'en a pas, on se sert donc du front.</td><td>Retire aussi une partie de l'activité frontale lente (&lt; 6 Hz, theta compris) : c'est pourquoi le calcul de l'<a href="#etat">état mental</a> s'en passe. Retarde le signal de 250 ms (voir ci-dessous).</td></tr>
+  <tr><td>Bruit commun à toutes les électrodes</td><td>Référence moyenne commune</td><td>On soustrait la moyenne des électrodes : ce qui est identique partout disparaît. La justification théorique suppose de nombreuses électrodes couvrant toute la tête <a href="sources.html#r35">[35]</a>.</td><td>Avec 4 électrodes, la moyenne n'est pas un vrai « zéro » : chaque canal hérite d'un quart des autres. À utiliser avec prudence.</td></tr>
+</table>
+<h3>Le compromis du temps réel : retard et phase</h3>
+<p>Un filtre en temps réel ne connaît que le passé : il <strong>retarde</strong> forcément le signal. Les filtres récursifs utilisés ici (biquads <a href="sources.html#r31">[31]</a>) sont très économes mais retardent différemment chaque fréquence (distorsion de phase) : c'est sans conséquence pour des bandes de fréquences, mais gênant quand on veut soustraire exactement une forme d'onde.
+C'est pourquoi la réduction des clignements utilise un filtre <strong>FIR à phase linéaire</strong> : toutes les fréquences sont retardées de la même durée (250 ms), ce qui permet d'aligner la référence sur le clignement. Avec un filtre récursif, nos tests montrent qu'environ 80 % du clignement restait ; avec le FIR, environ 80 % est retiré.</p>
+<h3>Mesurer plutôt que croire</h3>
+<p>Le projet affiche l'effet de chaque réglage : puissance du parasite secteur et de la dérive (qu'on veut voir baisser), et puissance des rythmes 8–30 Hz (qu'on veut voir <strong>conservée</strong> : un bon filtrage ne détruit pas le signal cérébral). Le projet affiche côte à côte, pour le signal brut et le signal amélioré, le spectre « instantané » (une seule FFT sur la dernière seconde) et le spectre « stabilisé » par la méthode de Welch <a href="sources.html#r14">[14]</a> (moyenne de segments sur 4 s) : le premier réagit vite mais fluctue beaucoup, le second est plus lent mais bien plus lisible. La même grille est affichée pour les parts des bandes (delta, theta, alpha, bêta, gamma) : on y voit par exemple que le passe-bas réduit la part du gamma (en grande partie musculaire) et qu'un clignement présent dans la fenêtre gonfle artificiellement le delta (voir aussi la simulation de la <a href="#sim-spectrum">section 12</a>). Le mode démonstration fabrique un signal dont on connaît les défauts, ce qui permet de vérifier que chaque remède fait bien ce qu'il annonce.</p>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/filtres" target="_top">Amélioration numérique du signal</a>, <a href="../index.html#/p/live" target="_top">Capteurs en direct</a>.</p>
+
+<div class="part-head" id="p4"><span>Étape 4 sur 5</span><div class="part-title">Reconnaître ce qui ne vient pas du cerveau</div><p>Les artefacts : les comprendre, les repérer, régler leur détection.</p></div>
+
+<h2 id="artefacts"><span class="num">14</span> Qu'est-ce qu'un artefact ?</h2>
+<p class="brief"><b>En bref.</b> Tout ce qui ne vient pas du cerveau : yeux, muscles, mouvements, secteur. Souvent bien plus grand que l'EEG lui-même.</p>
+<p>On appelle <strong>artefact</strong> tout signal enregistré qui ne vient pas du cerveau. Ils sont inévitables et souvent <em>bien plus grands</em> que l'EEG lui-même (une centaine de µV pour un clignement, contre quelques dizaines pour l'alpha) <a href="sources.html#r16">[16]</a><a href="sources.html#r17">[17]</a>.</p>
+<table>
+  <tr><th>Source</th><th>Origine physique</th><th>Où ça se voit</th></tr>
+  <tr><td>Yeux (EOG)</td><td>L'œil est un petit aimant électrique (<em>dipôle</em>) : la cornée est positive par rapport à la rétine. Quand l'œil bouge ou que la paupière se ferme, ce champ change.</td><td>front (AF7, AF8), lent (&lt; ~10 Hz)</td></tr>
+  <tr><td>Muscles (EMG)</td><td>Chaque contraction produit des impulsions électriques rapides.</td><td>front (sourcils), tempes (mâchoire) ; rapide (&gt; 20 Hz) <a href="sources.html#r18">[18]</a></td></tr>
+  <tr><td>Mouvement</td><td>Câble ou électrode qui bouge, changement de contact.</td><td>tous les canaux</td></tr>
+  <tr><td>Cœur, secteur</td><td>Activité cardiaque ; parasites à 50 Hz du réseau électrique.</td><td>variable</td></tr>
+</table>
+<p>Dans cette application, on ne cherche pas à <em>retirer</em> les artefacts mais à les <strong>reconnaître</strong> : soit pour les ignorer, soit parce qu'ils sont eux-mêmes l'information utile (clignement, regard, mâchoire serrée : de quoi piloter des projets).</p>
+<p><strong>Un seuil ne suffit pas : la forme compte.</strong> Sur des gestes réels annotés, un simple dépassement de seuil confond des artefacts de même ordre de grandeur : une déflexion lente de sourcils (1,5 à 2,8 s) a été prise pour des clignements (0,06 à 0,44 s), une mâchoire a été « vue » pendant un clignement appuyé, le retour de l'œil au centre a été compté comme un regard opposé. Le détecteur juge donc aussi la durée et l'enchaînement des événements ; mesures et limites dans <a href="#annotation">la section 18</a>.</p>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/live" target="_top">Capteurs en direct</a>, <a href="../index.html#/p/etude" target="_top">Étude d'échantillon</a>.</p>
+
+<h2 id="yeux"><span class="num">15</span> Les yeux : clignements et regards</h2>
+<p class="brief"><b>En bref.</b> L'œil est un petit dipôle : un clignement fait monter les deux électrodes du front ensemble, un regard les fait bouger en sens opposés.</p>
+<h3>Le clignement</h3>
+<p>Quand la paupière se ferme, l'œil pivote vers le haut (phénomène de Bell). La cornée, positive, se rapproche des électrodes frontales : on voit une <strong>grande bosse lente</strong> de quelques centaines de millisecondes <a href="sources.html#r20">[20]</a><a href="sources.html#r21">[21]</a>.
+Les deux yeux bougent ensemble, donc AF7 et AF8 montrent la même chose. L'application :</p>
+<ul>
+  <li>fait la <strong>moyenne</strong> AF7/AF8 de la partie lente (filtre passe-bas 10 Hz), ce qui renforce le clignement (commun aux deux côtés) ;</li>
+  <li>prend la <strong>valeur absolue</strong>, car le sens de la déflexion dépend de la référence et du montage ;</li>
+  <li>compte un clignement quand elle dépasse le seuil puis revient sous la moitié du seuil, avec une durée plausible (60 à 900 ms) ; une courte période « réfractaire » de 200 ms évite de compter deux fois le rebond.</li>
+</ul>
+<h3>Le regard à gauche ou à droite</h3>
+<p>Quand les yeux tournent vers la gauche, la cornée positive se rapproche des électrodes de gauche et s'éloigne de celles de droite : le potentiel monte à gauche et baisse à droite. Cet effet, proportionnel à l'angle du regard dans une certaine plage, est la base de l'<strong>électro-oculographie</strong> <a href="sources.html#r22">[22]</a><a href="sources.html#r23">[23]</a>.
+Contrairement au clignement, il est <em>antisymétrique</em> : c'est la <strong>différence AF7 − AF8</strong> qui le révèle, alors que le clignement s'annule dans la différence. Le décalage dure aussi longtemps que le regard reste sur le côté, d'où une référence très lente (10 s) figée pendant le regard.</p>
+<p><strong>Le retour au centre.</strong> Après un regard, l'œil revient : ce retour (et, hypothèse non mesurée, le filtre passe-haut du casque) produit une contre-déviation de signe opposé qui ressemble à un regard de l'autre côté ; un regard à gauche était ainsi compté « gauche puis droite ». Sur deux séances annotées, 8 fenêtres de regard sur 8 ont montré ce retour, 0,7 à 0,9 s après le début, aussi grand que l'aller : la première règle (0,8 s, moins de 70 % du pic) ne le filtrait pas. L'application ignore maintenant une déviation de signe opposé survenant dans les 1,2 s après un regard, si elle ne dépasse pas 1,5 fois le pic de ce regard. Conséquence : un vrai regard de l'autre côté dans ces 1,2 s n'est compté que s'il dure au-delà ; un aller-retour très rapide est perdu. Seuils tirés d'une seule personne (voir la section annotation), non validés ailleurs.</p>
+<p>Le sens (gauche = positif ou négatif) dépend du casque et de la référence ; la calibration le détermine en faisant suivre des yeux un point qui se déplace sur l'écran (voir <a href="#calibration">Calibrer la détection</a>).</p>
+
+<div class="sim" id="sim-eye" data-sim="eye"><h4>Simulation : l'œil, un petit dipôle électrique</h4></div>
+<p><strong>Vérifier la théorie : attendu contre réel.</strong> Le projet « Regard » ne se contente pas d'affirmer que AF7 − AF8 est proportionnel à l'angle du regard : il le met à l'épreuve. Un point se déplace sur l'écran (2 s au centre, 8 fixations de 3 s à ±0,5, ±1 et 0, puis un balayage lent de 12 s) ; on compare l'écart AF7 − AF8 mesuré à ce que la théorie attend. L'angle découle de la largeur de l'écran et de la distance des yeux ; la pente théorique employée, 2,5 µV par degré, est une <em>valeur d'illustration</em>, pas une mesure du Muse. Comment lire les chiffres :</p>
+<ul>
+  <li><strong>Corrélation r</strong> (signée, au meilleur décalage) : à quel point la forme suit celle du point. Proche de 1 = le dipôle explique bien le signal ; faible (&lt; 0,5) = le regard ne ressort pas du reste (bruit, dérive, mauvais contact). Une dérive lente suffit à la faire chuter : l'analyse ajuste donc, en même temps que la position, une dérive polynomiale de degré 3 sur les 38 s, puis écarte les images à plus de 3 écarts absolus médians (clignements, pics) et recalcule. r mesure alors la part de variance, dérive retirée, expliquée par la position. Limite : la dérive cubique peut absorber une partie d'un vrai signal lent (balayage), d'où un r un peu sous-estimé.</li>
+  <li><strong>Gain réel / théorie</strong> : la pente mesurée en µV rapportée à la pente attendue ; entre 0,5 et 2 on parle d'accord d'ordre de grandeur. Il dépend de la peau, de la position du casque et de la référence : il n'a pas de valeur universelle, d'où la calibration personnelle.</li>
+  <li><strong>Retard</strong> (0 à 0,6 s) : temps de réaction de l'œil et retard dû au filtrage.</li>
+  <li><strong>Affaissement</strong> : si le signal retombe pendant une fixation tenue, l'hypothèse est celle d'un filtre passe-haut matériel du casque (cf. le retour au centre ci-dessus) ; un rapport fin/début proche de 1 indique l'absence d'affaissement.</li>
+  <li><strong>Asymétrie</strong> : pentes gauche et droite différentes (électrodes ou peau non symétriques).</li>
+</ul>
+<p>Les seuils du verdict (r &lt; 0,5 faible ; r ≥ 0,8 et rapport 0,5 à 2 bon) sont des choix a priori. <strong>Le premier essai sur casque réel n'a PAS confirmé la théorie</strong> : r = −0,06, gain 2 µV, bruit au centre 26,7 µV, asymétrie 114 %, affaissement −11 %, tête 5,9 °/s rms, avec une dérive de AF7 − AF8 de plusieurs dizaines de µV que l'analyse d'alors ne retirait pas. La cause n'est <strong>pas confirmée</strong> (dérive, clignements, yeux qui ne suivent pas le point, mauvais contact, retard…) ; le correctif (dérive et pics retirés) n'a pas encore été revalidé sur casque. <strong>Rien de tout cela n'est validé</strong> : la démonstration avec le simulateur (r = 0,99) ne prouve que le fonctionnement de la chaîne, le gain du simulateur étant un réglage. Le regard vertical, la distance, l'éclairage et la fatigue ne sont pas mesurés. Depuis, la dérive retirée n'a rien changé (la courbe réelle reste stable) et l'utilisateur a observé que le « regard » détecté ressemble à un signal de type clignement : <em>hypothèse non vérifiée</em>, la détection capterait un artefact frontal (paupières, muscles) plutôt qu'une déviation oculaire. Détail, modalités et suites : <a href="resultats.html">Résultats : théorie vs réalité</a>.</p>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/regard" target="_top">Regard : théorie et réalité</a>, <a href="../index.html#/p/live" target="_top">Capteurs en direct</a>,<a href="../index.html#/p/jeu-artefacts" target="_top">Jeu des artefacts</a> (regard = changer de couloir, clignement = sauter).</p>
+
+<h2 id="muscles"><span class="num">16</span> Les muscles : sourcils, mâchoire, bâillements</h2>
+<p class="brief"><b>En bref.</b> Une contraction ajoute une énergie rapide (au-delà de 20 Hz) : au front pour les sourcils, aux tempes pour la mâchoire.</p>
+<p>Un muscle qui se contracte produit un signal électrique <strong>rapide et irrégulier</strong> (somme de nombreuses impulsions), qui s'étend sur de larges fréquences. Au-dessus d'environ 20 Hz, l'EEG du cuir chevelu est en grande partie d'origine musculaire <a href="sources.html#r18">[18]</a><a href="sources.html#r19">[19]</a>.
+L'application mesure donc l'<strong>énergie au-dessus de 15 Hz</strong> :</p>
+<ul>
+  <li><strong>Sourcils</strong> (froncer, hausser) : muscles du front, captés par AF7/AF8.</li>
+  <li><strong>Mâchoire serrée</strong> : muscles temporal et masséter, captés par TP9/TP10 (près de l'oreille).</li>
+  <li>Comme front et tempes se contaminent entre eux, on compare chaque niveau à <em>son propre seuil</em> et le plus fort l'emporte.</li>
+  <li>Le <strong>parasite du secteur</strong> (50 ou 60 Hz) tombe lui aussi au-dessus de 15 Hz, et il est fort justement quand le contact est mauvais. Il est donc retiré (coupe-bande, avec son harmonique) avant de mesurer l'énergie : sinon une électrode mal posée passait pour une contraction. Cela abaisse un peu le niveau mesuré (≈ 8 % sur nos tests) : refaire la calibration des artefacts est conseillé.</li>
+</ul>
+<p>Le muscle ne se cantonne pas aux hautes fréquences : son spectre s'étend de quelques hertz à plus de 200 Hz, avec un maximum vers 20–30 Hz pour le muscle frontal et 40–80 Hz pour le muscle temporal (mâchoire) <a href="sources.html#r48">[48]</a>. Il déborde donc sur la bande bêta classique (13–30 Hz) : c'est pourquoi l'indice de concentration de la <a href="#etat">section État mental</a> s'arrête à 20 Hz et surveille un témoin 30–45 Hz.</p>
+<h3>Froncer les sourcils : s'aider du pouls</h3>
+<p>Le capteur de pouls du Muse 2 est posé sur le front : froncer les sourcils déforme la peau et fait varier la lumière reçue, indépendamment du cœur. L'application mesure l'activité du pouls relative à son niveau calme (≈ 1 au repos, grande pendant un mouvement du front). Elle ne l'utilise que si la calibration montre qu'il réagit aux sourcils chez la personne, et seulement en appoint : un froncement est compté si le pouls dépasse son seuil <em>et</em> que l'EEG des sourcils atteint au moins 50 % du sien (deux indices faibles qui concordent) ; le pouls seul ne déclenche rien. C'est une <strong>hypothèse de l'application</strong> (artefact de mouvement du PPG frontal), sans source scientifique citée, <strong>non testée sur casque réel</strong> : réaction réelle du pouls, effet des mouvements de tête, respiration ou parole (faux positifs possibles), valeur 0,5.</p>
+<h3>Le bâillement : une heuristique</h3>
+<p>Un bâillement combine plusieurs choses : bouche grande ouverte (muscles de la mâchoire), yeux qui se plissent ou se ferment, inspiration profonde, parfois un mouvement de tête. Il n'existe pas, à notre connaissance, de signature EEG validée pour un casque à 4 électrodes.
+L'application utilise donc une <strong>règle de bon sens</strong> : un épisode de mâchoire <em>long</em> (par défaut plus de 1,8 s, ajusté par la calibration) <em>qui engage aussi le front ou les yeux</em> est classé « bâillement ». C'est une heuristique, pas une mesure scientifique ; elle peut se tromper (par exemple en serrant longtemps les dents en grimaçant).</p>
+
+<div class="sim" id="sim-muscle" data-sim="muscle"><h4>Simulation : une contraction dans le spectre</h4></div>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/live" target="_top">Capteurs en direct</a>.</p>
+
+<h2 id="calibration"><span class="num">17</span> Calibrer la détection</h2>
+<p class="brief"><b>En bref.</b> Les signaux varient d'une personne à l'autre : la calibration place chaque seuil entre ton niveau de repos et tes gestes.</p>
+<p>La taille des artefacts dépend de la personne (peau, cheveux, forme du crâne), de la façon dont le casque est posé et même de l'humidité de la peau <a href="sources.html#r8">[8]</a>. Un seuil unique serait trop haut pour certains (gestes ratés) et trop bas pour d'autres (fausses alertes).</p>
+<p>C'est un problème classique de <em>détection</em> : un seuil bas détecte tout mais se trompe souvent ; un seuil haut se trompe peu mais rate des événements. La calibration mesure :</p>
+<ol>
+  <li>le <strong>niveau de repos</strong> (bruit de fond) : 90<sup>e</sup> percentile des mesures au calme (un percentile plutôt qu'un maximum, pour ne pas être trompé par un clignement ou un mouvement isolé) ;</li>
+  <li>le <strong>pic typique de chaque geste</strong> : médiane des pics des répétitions ;</li>
+  <li>puis place le seuil à <strong>40 % du chemin</strong> entre les deux : assez bas pour détecter, assez haut pour rester au-dessus du bruit.</li>
+</ol>
+<p>Quand un geste est raté (trop faible pour se distinguer du repos), on ne refait que celui-là : les autres seuils, déjà mesurés sur la même pose du casque, sont conservés. Si le casque a bougé entre-temps, mieux vaut tout refaire, car le niveau de repos a pu changer.</p>
+<p><strong>Une calibration par personne.</strong> Comme les signaux changent d'une personne à l'autre, chaque <em>profil</em> de l'application garde sa propre calibration (et sa sensibilité, ses filtres, sa référence d'état mental) : changer de profil change de seuils. Si plusieurs personnes utilisent le casque, chacune devrait avoir son profil.</p>
+<p>Le choix de 40 % est un compromis arbitraire, non issu de la littérature : c'est un réglage à affiner d'après ton expérience (le réglage « Sensibilité » le multiplie). Il n'est pas adapté partout : pour le <strong>pouls</strong> (indice du front), 40 % donnait un seuil de 11 alors que les sourcils de la personne mesurée atteignaient 5,1 à 12,1 (une fenêtre sur cinq franchissait 11) ; le seuil est maintenant à <strong>15 %</strong> du chemin (environ 5). Pour le <strong>regard</strong>, un seuil par direction (gauche / droite) remplace le seuil commun : chez cette personne les impulsions à gauche font 100 à 160 µV, à droite 61 à 79 µV, et le seuil commun (56,7 µV) manquait 3 regards à droite sur 7. Voir la <a href="#annotation">section 18</a> pour l'évaluation et pour le fait que la calibration est faite sur le signal <em>brut</em>.</p>
+<p><strong>Calibrer le regard : des regards « secs ».</strong> Deux premières versions ont été abandonnées. (1) Deux enregistrements séparés (« regarde à gauche », « regarde à droite ») : on trouvait le même signe pour les deux côtés, car on ne sait pas <em>quand</em> le sujet regarde où et le retour des yeux au centre produit une déviation de sens opposé. (2) Un point qui glisse à suivre (lent, moyen, par bonds), analysé par corrélation avec sa position : cela suppose que l'écart AF7 − AF8 suive l'angle de l'œil, ce que nos tests n'ont pas observé (<a href="resultats.html#theme-regard">thème Regard, E1 à E4</a> ; hypothèse : électrodes frontales trop loin du dipôle de l'œil). Seules les saccades larges laissent une trace, sous forme d'une impulsion brève (~0,3 s) <em>suivie d'une impulsion de retour de signe opposé</em> (<a href="resultats.html#e6">E6</a>).
+La calibration repose donc sur des regards « secs » : un point <strong>saute</strong> sur un bord de l'écran (dix sauts, cinq de chaque côté, toutes les 3 s), il faut y jeter les yeux d'un coup, franchement, les garder environ 1 s, puis revenir au centre, sans bouger la tête. Pour chaque consigne, l'application ne garde que la <strong>première impulsion</strong> (premier instant où l'écart atteint 60 % du maximum de la fenêtre d'1 s, puis son sommet dans les 0,25 s qui suivent) : le retour, de signe opposé, vient plus tard et ne doit pas être pris pour le regard. Il faut au moins 3 impulsions nettes (plus de 1,6 × le bruit de repos) de chaque côté ; le <em>signe</em> majoritaire donne le sens du montage (au moins 80 % de concordance, sinon « sens incohérent »), et l'amplitude médiane de chaque côté donne un seuil par direction (règle des 40 %). Tous ces nombres sont des choix de l'application, <strong>sans référence</strong> et non réglés sur des essais de ce protocole. <strong>Limites</strong> : le protocole n'a <strong>jamais été lancé sur casque réel</strong> ; une seule personne et un seul casque ont servi aux mesures ; dans la séance de 16:46 le signe de la première impulsion concorde seulement 7 fois sur 10 (21 sur 24 sur l'ensemble), donc l'étape pourrait échouer en « sens incohérent » ; le geste demandé n'a pas été validé par l'utilisateur. Estimation <strong>sans casque</strong> (impulsions annotées rejouées avec les nouvelles règles) : 45 fenêtres de geste sur 52 détectées contre 29 avec le profil tel quel ; ce n'est pas un essai du nouveau protocole.
+<p><strong>Étapes à la carte.</strong> On peut ne calibrer que certaines étapes (cases à cocher) ; les autres gardent leurs seuils. Le repos est ajouté d'office s'il n'a jamais été mesuré, car chaque seuil se place par rapport à lui.</p>
+<p><strong>Vérifier la calibration : le défi des gestes.</strong> Un seuil se juge sur des gestes <em>qu'il n'a pas servi à fixer</em>. C'est le principe d'un « jeu de test » : la calibration apprend sur une série de gestes, puis le défi demande d'autres gestes, au hasard et sans prévenir, et compte ceux qui sont reconnus, ceux qui sont manqués et ceux qui sont confondus avec un autre geste (par exemple un froncement pris pour une mâchoire serrée, parce que les deux sont des bouffées musculaires). Un geste reconnu moins d'une fois sur deux signale un seuil mal placé : on ne refait que l'étape correspondante. Dix gestes ne donnent qu'une idée grossière du taux de réussite (une ou deux erreurs changent beaucoup le score) : c'est un contrôle rapide, pas une validation statistique.</p>
+
+<p><strong>Calibrer en jouant : la calibration dynamique.</strong> Dans le <a href="../index.html#/p/jeu-artefacts" target="_top">Jeu des artefacts</a>, l'application sait quel geste le jeu attend et quand ; elle suppose que le joueur le fait, mesure le pic de ce geste (« essai ») et le compare au repos mesuré entre les essais, puis applique la même règle des 40 % : seuil = repos + 0,4 × (geste − repos). Le repos est le 60<sup>e</sup> centile des pics par tranche de 2 s (un centile plus bas que celui de la calibration guidée, car en jeu le joueur regarde l'écran et ses mouvements d'yeux gonflent le repos), le geste la médiane des essais retenus (pic ≥ 1,2 × repos, sinon on suppose que le geste a été raté) ; la mise à jour exige un geste d'au moins 1,4 × le repos. Le seuil n'avance que de 50 % de l'écart toutes les 5 s et de façon bornée, pour ne pas osciller.</p>
+<p><strong>Sens du regard.</strong> Si le sens gauche / droite n'est pas calibré, il peut être inversé : le geste « demandé à gauche » se lit alors du côté opposé et rien n'est appris. Chaque essai de regard vote donc avec le signe de sa <strong>première impulsion</strong> (et non du plus grand pic de l'essai : le retour des yeux, de signe opposé, est souvent plus grand que l'aller et faussait le vote) ; si au moins 70 % des essais (au moins 3, pic ≥ 1,2 × repos) se lisent du mauvais côté, elle inverse le sens et repart de zéro. Le même facteur est appliqué aux seuils gauche / droite. Heuristique propre à l'application, sans référence. Limite physique : le signal de regard (écart AF7 − AF8) est une ligne de base lente, et le retour des yeux au centre produit une déviation opposée ; un regard très bref (moins de 150 ms au-dessus du seuil) n'est jamais détecté, quel que soit le seuil. Ces correctifs répondent à un retour (« aucun regard ne passe sur casque réel ») dont la cause n'est <strong>pas confirmée</strong> et qui reste <strong>non validé sur casque réel</strong>.</p>
+<p><strong>Un biais à connaître.</strong> Apprendre « par l'usage » n'est pas neutre : le jeu ne retient que des gestes <em>déjà détectés</em>, donc plutôt forts, ce qui tire les seuils vers le haut (on rate de plus en plus les petits gestes) ; un clignement ou un mouvement involontaire pendant le « repos » relève au contraire le repos et rend le seuil trop prudent. Le suivi de 0,4 s après chaque essai atténue le premier biais sans l'éliminer. Les gestes très lents ou très faibles ne sont pas traités. Il s'agit d'une méthode heuristique, <strong>non testée avec le casque réel</strong> (tests sur signaux synthétiques et simulateur seulement) ; elle ne remplace pas la calibration guidée, qui demande les gestes sans les confondre avec le jeu. Pas de référence : seule la règle des 40 % est reprise, elle-même arbitraire (voir plus haut).</p>
+
+<div class="sim" id="sim-threshold" data-sim="threshold"><h4>Simulation : où placer le seuil ?</h4></div>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/live" target="_top">Capteurs en direct</a>, <a href="../index.html#/p/calibration" target="_top">Calibration</a> (calibration générale et défi des gestes), <a href="../index.html#/p/jeu-artefacts" target="_top">Jeu des artefacts</a> (calibration dynamique).</p>
+
+<h2 id="annotation"><span class="num">18</span> Mesurer le détecteur : annoter des gestes et des états</h2>
+<p class="brief"><b>En bref.</b> Pour savoir si le détecteur a raison, il faut une <em>vérité connue</em> posée sans lui : on étiquette des gestes (consigne affichée, ou touche maintenue pendant le geste), puis on compare. Une séance, une personne : un ordre de grandeur, pas une validation.</p>
+<p><strong>Le problème.</strong> Un seuil se juge sur des gestes dont on connaît le moment et la nature (« vérité terrain » : les étiquettes de référence). Deux méthodes, qu'on peut combiner dans le même projet :</p>
+<ol>
+  <li><strong>Forcée.</strong> L'application affiche une consigne ; la vérité est la <em>fenêtre</em> de la consigne, posée <em>avant</em> le geste, donc sans biais du détecteur. La précision est celle de la fenêtre : le geste s'y trouve, temps de réaction compris, mais on ne sait pas où exactement. Une touche X ou le bouton « Raté » exclut la fenêtre (qualité « douteux »). Les blocs sont équilibrés (autant de chaque geste, jamais deux fois la même consigne d'affilée) et « repos » est une étiquette à part entière : elle sert à mesurer les <strong>fausses alarmes</strong>.</li>
+  <li><strong>Spontanée.</strong> La personne maintient une touche (1…n) ou un bouton pendant le geste (un seul appui pour un clignement). Comme on réagit avec retard, un <strong>temps de réaction</strong> est retranché (350 ms par défaut : <strong>hypothèse non mesurée</strong>, réglable) ; un geste bref devient une fenêtre de ±0,5 s autour de l'instant corrigé. Tout est corrigeable ensuite (revue : visionneuse AF7 / AF8, tableau éditable, décalage global).</li>
+</ol>
+<p><strong>Choix volontaire : pas de pré-annotation par le détecteur.</strong> Faire <em>confirmer</em> par la personne les détections du détecteur serait commode, mais l'œil est attiré par ce qui est proposé (biais d'ancrage) : on testerait le détecteur contre lui-même. Ses détections sont donc stockées à part, jamais comme vérité.</p>
+<p><strong>La comparaison</strong> (tolérance ±1 s) donne : le rappel par geste (part des gestes retrouvés) et le délai médian depuis le début de la fenêtre ; les confusions (par exemple un regard à gauche lu à droite, signe d'un montage inversé) ; les fausses alarmes pendant le « repos ». Les détections hors de toute fenêtre ne sont <em>pas</em> comptées comme erreurs (on ne sait pas ce que faisait la personne), et les clignements naturels ne le sont jamais.</p>
+<p><strong>États mentaux (outil « État mental »).</strong> Mêmes deux méthodes, avec des états (Détendu, Concentré, Somnolent, Neutre) au lieu de gestes, dans des fenêtres de 45 s. Mais <em>un état mental ne s'obtient pas sur commande</em> : en mode forcé, la fenêtre enregistre l'<strong>intention</strong> (ce que la personne a tenté), pas l'état réel du cerveau. En mode spontané, l'annotation est <strong>subjective et retardée</strong> : le ressenti suit l'état avec un décalage, de l'ordre de dizaines de secondes (non mesuré ici), bien au-delà des 350 ms retranchés pour un geste. Ces étiquettes ne sont donc qu'une <strong>vérité approximative</strong>, destinée à évaluer l'estimateur d'état (theta, alpha, bêta comparés à la référence personnelle ; <a href="#etat">section 20</a>, sources <a href="sources.html#r41">[41]</a> <a href="sources.html#r42">[42]</a> <a href="sources.html#r43">[43]</a>). La comparaison aux gestes ignore ces fenêtres. <strong>Non fait</strong> : la comparaison automatique avec la sortie de l'estimateur (pas de tableau de concordance). <strong>Non testé avec le casque réel</strong> : seulement des tests unitaires et le chargement des pages ; la démonstration au simulateur (gains theta / alpha / bêta réglés selon l'état) n'a pas été vérifiée visuellement sur une séance complète.</p>
+<p><strong>Stockage.</strong> Un enregistrement au format de l'application (tâche « annotation »), dont les événements vont dans <code>*_events.tsv</code> au sens de BIDS <a href="sources.html#r51">[51]</a> (<code>onset</code>, <code>duration</code>, <code>trial_type</code>, plus des colonnes facultatives : source, qualité, précision, délai). Le dictionnaire des étiquettes et les détections sont conservés à côté, avec la note « ceci n'est PAS la vérité terrain » pour les détections.</p>
+<h3>Première évaluation sur casque réel (2026-10-08)</h3>
+<p><strong>Protocole.</strong> Deux séances de la même personne (profil p3, Muse 2) : une forcée (fenêtres de consigne) et une spontanée (la personne marque elle-même, retard de réaction supposé de 350 ms). 32 fenêtres de geste au total ; le détecteur est alimenté en signal brut avec la calibration du profil.</p>
+<p><strong>Constat avant correctif.</strong> Rappel 23/32, 40 fausses détections. Sourcils pris pour 3 clignements (déflexion lente de 300 à 1900 µV, 4 à 13 fois le seuil de clignement), donc froncement retrouvé 2 fois sur 5 ; mâchoire fausse pendant des clignements appuyés (7 + 2 faux « mâchoire ») ; retour au centre compté comme regard opposé (8 fenêtres de regard sur 8 : le retour est aussi grand que l'aller, la règle des 70 % ne le filtrait pas) ; regard à droite manqué (4/7) car seuil calibré de 56,7 µV (étape marquée « échouée ») alors que les impulsions à droite font 61 à 79 µV. Un cas de ligne de base du regard décalée après des sourcils (séance 1 seulement, non reproduit : hypothèse non confirmée).</p>
+<p><strong>Mesures de forme qui fondent les règles.</strong></p>
+<table>
+  <tr><th>Mesure</th><th>Valeurs</th></tr>
+  <tr><td>Durée de la déflexion lente (|moyenne AF7/AF8| &gt; 28 µV)</td><td>sourcils 1,5 à 2,8 s ; clignements 0,06 à 0,44 s ; mâchoire ≤ 0,31 s ; regard ≤ 0,44 s (aucun recouvrement)</td></tr>
+  <tr><td>Rapport de pouls frontal (1 = calme), pic par fenêtre</td><td>sourcils 5,1 à 12,1 ; repos, clignements, mâchoire, regards ≤ 3,9 (marge étroite)</td></tr>
+  <tr><td>Pic d'énergie rapide des tempes, en multiples du seuil de mâchoire</td><td>pendant un clignement appuyé 1,0 à 1,45 ; vraie mâchoire 1,68 à 2,4 (marge étroite)</td></tr>
+  <tr><td>Regard</td><td>impulsion brève (~0,3 s ; 100 à 160 µV à gauche, 61 à 79 µV à droite) suivie 0,7 à 0,9 s plus tard d'une impulsion de signe opposé d'amplitude égale (retour de l'œil, ou passe-haut du casque : hypothèse)</td></tr>
+  <tr><td>Énergie rapide du front ÷ déflexion</td><td>ne sépare pas sourcils (8-21 %) et clignement (16-22 %) : non utilisée</td></tr>
+</table>
+<p><strong>Règles qui en découlent.</strong> Une déflexion de clignement qui dure plus de 450 ms avec de l'énergie rapide au front, ou un pouls au-dessus de 4,5, indique le front : pas de clignement, sourcils possibles. La mâchoire n'est comptée pendant un clignement que si elle atteint 1,55 fois son seuil. Une impulsion de signe opposé dans les 1,2 s qui suivent un regard et plus petite que 1,5 fois son pic est le retour de l'œil. Pas de regard pour un écart supérieur à 8 fois le seuil ni dans les 2 s qui suivent des sourcils. Conséquence connue : un vrai regard de l'autre côté dans ces 1,2 s n'est compté que s'il dure au-delà.</p>
+<p><strong>Le retour est plus grand que l'aller (3 séances, 24 essais de regard).</strong> En prenant le maximum sur la fenêtre marquée plus 1 s de queue, le pic de sens opposé (le retour) dépasse le pic du bon sens dans 24 essais sur 24 (rapport typique 1,1 à 1,5, jusqu'à 6). La <em>première</em> impulsion fait environ 100 à 125 µV (trames à 32 Hz : pics brefs sous-échantillonnés, donc valeur par défaut) et son signe correspond au sens +1 dans 21 essais sur 24 (7 sur 10 sur la séance de 16:46). C'est pourquoi la calibration du regard et la calibration dynamique retiennent la première impulsion plutôt que le maximum (<a href="#calibration">section 17</a>, <a href="resultats.html#e6">E6</a>). Une personne, un casque ; interprétation du retour (œil ou passe-haut du casque) non tranchée.</p>
+<table>
+  <tr><th>Configuration (mêmes 32 fenêtres)</th><th>Rappel</th><th>Fausses détections</th><th>Détail</th></tr>
+  <tr><td>Calibration actuelle, avant correctif</td><td>23/32</td><td>40</td><td>froncement 2/5</td></tr>
+  <tr><td>Calibration actuelle, après correctif</td><td>23/32</td><td>26</td><td>froncement 2/5 (seuil de pouls calibré trop haut)</td></tr>
+  <tr><td>Après correctif, seuil de pouls 4,5 <strong>simulé</strong></td><td>26/32</td><td>13</td><td>clignement 7/7, froncement 5/5, mâchoire 4/6, regard gauche 6/7, droit 4/7</td></tr>
+  <tr><td>Valeurs par défaut (sans calibration), avant correctif</td><td>21/32</td><td>62</td><td></td></tr>
+  <tr><td>Valeurs par défaut, après correctif</td><td>25/32</td><td>36</td><td>clignement 0/7 : seuil par défaut 70 µV, clignements de cette personne 20-40 µV (seuil calibré 28 µV)</td></tr>
+</table>
+<p>La calibration réduit donc les fausses détections et rend les clignements détectables, mais ne suffit pas seule. Restent : la mâchoire 4/6 (deux gestes plus faibles que le seuil calibré de 18,8 µV) et le regard à droite 4/7 (à refaire avec la calibration par direction, pas encore refaite sur le casque).</p>
+<p><strong>Faut-il détecter sur le signal amélioré ?</strong> Non, d'après cette mesure. Rejoué avec le pipeline du profil (anti-pics, passe-haut 1 Hz, secteur 50 Hz, passe-bas 40 Hz, référence moyenne commune) et la calibration faite sur le brut, le rappel tombe à 8/32 contre 23/32. Le passe-haut 1 Hz divise par deux l'écart de regard ; passe-bas 40 Hz et référence moyenne ensemble font passer la mâchoire sous son seuil ; la référence moyenne multiplie par environ 3 l'échelle du clignement et du bruit de repos. Même recalibré, le brut reste préférable d'après le rapport pic du geste / bruit de repos (estimation grossière, les fenêtres de repos contiennent des clignements naturels), brut contre amélioré : froncement 6,8 / 5,9, regard 5,4 / 4,0, mâchoire 2,2 / 1,5, clignement 1,6 / 2,3 (seul gain, dû à la référence moyenne). Le détecteur et sa calibration restent donc sur le brut ; le signal amélioré sert à l'affichage et à l'état mental, qui exclut les segments repérés comme contaminés. L'essai complet « recalibrer puis rejouer sur signal amélioré » n'a pas été fait.</p>
+<p><strong>Limites de cette évaluation.</strong> Un seul sujet, une seule paire de séances, 2 à 5 répétitions par geste. Les valeurs retenues (450 ms, 4,5, 1,55, 1,2 s, 1,5 ×, 8 ×, 2 s) sont tirées de ces mêmes données : il n'y a pas de jeu de validation indépendant, donc les chiffres « après » sont optimistes. La vérité est une fenêtre de consigne (forcé : geste quelque part dans 3 s) ou le marquage de la personne avec un retard supposé de 350 ms (spontané). Le seuil de pouls refait (4,5) est simulé, pas issu d'une vraie recalibration. Les marges du pouls (5,1 contre 3,9) et de la règle mâchoire / clignement (1,45 contre 1,68) sont étroites. Rien n'a été testé sur un autre casque ni une autre personne ; les tests automatiques emploient des signaux synthétiques.</p>
+<p><strong>Limites générales.</strong> Le simulateur ne reproduit pas fidèlement les gestes réels. Le délai de réaction de 350 ms n'est pas mesuré. La capture est limitée à 15 min, en mémoire. Les étiquettes « yeux fermés » et « repos » n'ont pas de détecteur à comparer. Quelques dizaines de gestes d'une seule personne ne donnent qu'une idée grossière des taux de réussite.</p>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/annotation" target="_top">Annotation</a> (séance forcée ou spontanée, gestes ou états mentaux, revue, comparaison, enregistrement).</p>
+
+<div class="part-head" id="p5"><span>Étape 5 sur 5</span><div class="part-title">Interpréter, avec prudence</div><p>Ce qu'on peut tirer des rythmes, et ses limites.</p></div>
+
+<h2 id="alpha"><span class="num">19</span> Ton rythme alpha : yeux fermés et fréquence personnelle</h2>
+<p class="brief"><b>En bref.</b> Fermer les yeux renforce nettement le rythme alpha (effet de Berger) ; la fréquence exacte de son pic varie d'une personne à l'autre : deux repères personnels faciles à mesurer.</p>
+<p>Dès ses premiers enregistrements, Hans Berger a remarqué que l'onde régulière d'environ 10 Hz qu'il appela <em>alpha</em> s'affaiblit quand on ouvre les yeux et revient quand on les ferme <a href="sources.html#r45">[45]</a>. On l'explique par l'activité des aires visuelles et des boucles thalamo-corticales : au repos sans entrée visuelle, de grandes populations de neurones oscillent ensemble, et leur synchronisation produit un signal ample ; regarder « désynchronise » ces populations, le signal s'effondre. L'effet est plus fort à l'arrière de la tête ; sur le Muse, ce sont TP9 et TP10, derrière les oreilles, qui le voient le mieux. Ouvrir les yeux fait d'ailleurs baisser toutes les bandes, pas seulement l'alpha <a href="sources.html#r42">[42]</a>.</p>
+<p>La <strong>réactivité</strong> mesurée par l'application est le rapport des puissances alpha (8–13 Hz) yeux fermés / yeux ouverts, électrode par électrode, puis la médiane. Elle vaut souvent 2 ou plus ; proche de 1, c'est que l'alpha n'a pas réagi : yeux mal fermés, tension, mauvais contact, ou simplement une personne à alpha faible (cela existe et n'a rien d'anormal). Elle sert surtout à <em>vérifier que le casque capte bien de l'activité cérébrale</em> : aucun artefact ne grandit quand on ferme les yeux et qu'on se détend.</p>
+<p>La <strong>fréquence alpha individuelle</strong> (IAF) est la position du pic, entre 7 et 13 Hz, du spectre yeux fermés. Elle varie d'une personne à l'autre (environ 8 à 12 Hz chez l'adulte) et avec l'âge ; Klimesch propose de placer les bandes theta et alpha de chacun <em>autour de son IAF</em> plutôt qu'à des fréquences fixes <a href="sources.html#r46">[46]</a>. Il existe plusieurs façons de l'estimer (pic, centre de gravité, lissage du spectre) <a href="sources.html#r47">[47]</a> ; l'application prend le pic du spectre moyen (Welch sur 4 s, résolution 0,5 Hz), affiné entre deux raies par une parabole. Pour l'instant, l'IAF est mesurée et affichée mais <strong>pas encore utilisée</strong> pour déplacer les bandes de l'état mental.</p>
+<p>Limites : 20 s par condition est court ; un pic aplati (peu d'alpha) donne une IAF peu fiable ; cette mesure n'a pas encore été confrontée au casque réel dans l'application (seulement au simulateur).</p>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/calibration" target="_top">Calibration</a> (« Profil alpha »).</p>
+
+<h2 id="etat"><span class="num">20</span> Peut-on lire un état mental ?</h2>
+<p class="brief"><b>En bref.</b> Trois proportions de rythmes (détente, concentration, somnolence), comparées à ta propre référence : des tendances, pas une lecture des pensées.</p>
+<p>Pas au sens de « lire dans les pensées ». Mais certaines <strong>proportions entre rythmes</strong> varient de façon assez régulière avec l'état d'éveil, et la littérature en propose des indices simples. Le projet « État mental » en utilise trois, <strong>toujours comparés à ta propre référence</strong> :</p>
+<table>
+  <tr><th>Indicateur</th><th>Calcul</th><th>Ce que dit la littérature</th></tr>
+  <tr><td>Détente</td><td>α / (θ + α + β)</td><td>Au repos, l'alpha est le marqueur classique de l'éveil calme : il augmente quand on se détend, surtout yeux fermés, et baisse quand l'éveil monte <a href="sources.html#r42">[42]</a><a href="sources.html#r1">[1]</a>.</td></tr>
+  <tr><td>Concentration</td><td>β / (α + θ)</td><td>« Indice d'engagement » retenu par une équipe de la NASA pour adapter l'automatisation d'un cockpit à l'engagement du pilote <a href="sources.html#r41">[41]</a>. Établi en laboratoire avec un montage EEG classique sur le cuir chevelu (sites exacts non revérifiés), pas avec des électrodes au front et aux tempes, au contact des muscles du visage, comme le Muse. Ici, β = 13–20 Hz seulement (voir plus bas).</td></tr>
+  <tr><td>Somnolence</td><td>θ / (α + β)</td><td>À l'endormissement, l'alpha s'efface et le theta augmente <a href="sources.html#r43">[43]</a>. Nuance importante : <em>yeux ouverts</em>, l'apparition d'alpha peut au contraire signaler une baisse de vigilance.</td></tr>
+</table>
+<h3>Pourquoi une référence personnelle ?</h3>
+<p>Les puissances absolues varient énormément d'une personne à l'autre et d'une pose du casque à l'autre (contact, épaisseur du crâne, position exacte). Un même rapport β/(α+θ) peut être « élevé » chez l'un et « bas » chez l'autre. La référence est donc mémorisée <strong>dans le profil</strong> de la personne. L'application mesure donc 30 s de référence (au calme, yeux ouverts) et n'affiche que des <strong>écarts</strong> à cette référence (le panneau « Bandes » montre aussi l'écart de θ, α et β pris séparément).</p>
+<h3>Quel écart est significatif ? Un seuil personnel</h3>
+<p>Même au repos, les indices fluctuent d'une seconde à l'autre : un spectre estimé sur 4 s est bruité, même moyenné par la méthode de Welch <a href="sources.html#r14">[14]</a>. Un seuil fixe (+20 %) serait trop sensible pour une personne au signal agité et trop sourd pour une autre. L'application mesure donc, pendant les 30 s de référence, <strong>de combien tes scores varient au repos</strong>, et place le seuil à <strong>2 fois cet écart-type</strong> : un écart plus grand a peu de chances d'être dû au hasard de la mesure.</p>
+<ul>
+  <li>L'écart-type est estimé de façon <strong>robuste</strong> : 1,4826 × l'écart absolu médian (MAD), qui ignore quelques secondes atypiques (un clignement oublié…) ; le facteur 1,4826 le rend égal à l'écart-type pour un bruit gaussien <a href="sources.html#r50">[50]</a><a href="sources.html#r32">[32]</a>.</li>
+  <li>Le score affiché est <strong>lissé</strong> (moyenne glissante d'environ 5 s), ce qui réduit ses fluctuations, mais moins qu'on ne le croirait : deux fenêtres de 4 s avancées d'une seconde partagent 3 s de signal, leurs scores sont donc corrélés. Le calcul (vérifié par simulation) donne un écart-type lissé ≈ 0,56 × l'écart-type par seconde.</li>
+  <li>Le seuil est borné entre +10 % et +65 %. Sans dispersion connue (ancienne référence, trop peu de secondes propres, référence = médiane d'un enregistrement), on revient à +20 %.</li>
+  <li>Hypothèse : au repos, la fluctuation est surtout du bruit de mesure. Une dérive lente (fatigue, casque qui bouge) n'est pas prise en compte : d'où le plancher de +10 %.</li>
+</ul>
+<h3>Ce qui fausse la mesure</h3>
+<ul>
+  <li><strong>Les muscles</strong> : serrer la mâchoire ou froncer les sourcils ajoute du bêta et du gamma « parasites » (<a href="#muscles">section 16</a>) et ferait croire à de la concentration. Au-dessus de 20 Hz, l'EEG du cuir chevelu est surtout musculaire <a href="sources.html#r18">[18]</a>, et les muscles du front et des tempes ont leur maximum entre 20 et 80 Hz <a href="sources.html#r48">[48]</a> : l'indice de concentration n'utilise donc que le bêta <strong>13–20 Hz</strong>. En plus, un <strong>témoin musculaire</strong> mesure la puissance 30–45 Hz (presque uniquement musculaire) sur le signal brut : si elle dépasse le double de sa valeur de référence, l'électrode « tendue » ne compte plus pour la concentration, et si toutes le sont, « Concentré » ne peut plus s'afficher. Une tension musculaire ne fait que monter le bêta : elle ne peut pas déclencher à tort « détendu » ou « somnolent ». Limite : une tension déjà présente pendant la référence n'est pas vue.</li>
+  <li><strong>Les yeux</strong> : un clignement ou un regard sur le côté crée au front une onde lente de dizaines de µV <a href="sources.html#r16">[16]</a><a href="sources.html#r22">[22]</a>, qui gonfle le delta et le theta. Ces artefacts sont <em>localisés</em> : clignements, regards et sourcils touchent le front (AF7/AF8), la mâchoire les tempes (TP9/TP10), un bâillement les quatre. Le spectre d'une fenêtre de 4 s est la moyenne de 7 morceaux de 1 s : l'application ne retire, pour chaque électrode, que les <strong>morceaux touchés</strong> par un artefact (avec 0,3 s de marge pour les ondes lentes), et garde l'électrode s'il en reste au moins 3. Pour que cela ne biaise rien (l'alpha est naturellement plus fort derrière les oreilles qu'au front), <strong>chaque électrode est comparée à sa propre référence</strong>. Sur signal simulé (15 à 20 clignements par minute, un rythme normal), le front restait presque toujours écarté quand un seul clignement écartait toute la fenêtre ; il est maintenant utilisé 65 à 93 % du temps. Non vérifié sur le casque réel.</li>
+  <li><strong>Les filtres</strong> : la réduction automatique des clignements (piste « eog » du projet Amélioration) soustrait une part de l'activité frontale lente, theta compris, et son réglage évolue au fil des clignements. Elle n'est donc <strong>jamais appliquée au calcul d'état</strong> (ni pour la référence, ni en direct, ni dans l'Étude) : sinon la somnolence, qui repose sur le theta, serait faussée.</li>
+  <li><strong>La position des électrodes</strong> : le Muse n'a pas d'électrode à l'arrière de la tête, là où l'alpha est le plus fort (<a href="#electrodes">section 2</a>). Les indices sont donc plus faibles et plus bruités qu'en laboratoire.</li>
+  <li><strong>Yeux ouverts ou fermés</strong> : fermer les yeux augmente fortement l'alpha <a href="sources.html#r42">[42]</a>, ce qui ferait passer à « détendu » sans changement d'état réel. Garder la même condition que pendant la référence.</li>
+  <li><strong>Pas de validation individuelle</strong> : ces indices sont des tendances observées sur des groupes, pas des diagnostics. Ils servent à explorer et à jouer, pas à conclure.</li>
+</ul>
+<h3>Étudier un enregistrement : quelle référence ?</h3>
+<p>Le projet « Étude d'échantillon » calcule les états seconde par seconde sur un enregistrement. Le résultat dépend entièrement de la référence :</p>
+<ul>
+  <li><strong>Médiane de l'échantillon</strong> : les états sont <em>relatifs à l'échantillon lui-même</em>. Par construction, une partie paraîtra « plus détendue » et une autre « moins » : utile pour repérer les variations, pas pour dire si la personne était détendue dans l'absolu.</li>
+  <li><strong>Une portion choisie</strong> (par exemple les premières secondes, au calme) : on compare la suite à ce moment-là. C'est la démarche classique d'une expérience (« ligne de base » puis tâche).</li>
+  <li><strong>La référence mesurée</strong> dans le projet État mental (ou la calibration générale) : pertinente seulement si le casque était posé de la même façon.</li>
+</ul>
+<div class="sim" id="sim-mental" data-sim="mental"><h4>Simulation : trois indices, une référence</h4></div>
+<p class="in-app"><b>Dans l'application</b> : <a href="../index.html#/p/etat" target="_top">État mental</a>, <a href="../index.html#/p/etude" target="_top">Étude d'échantillon</a>.</p>
+
+<h2 id="limites"><span class="num">21</span> Ce qu'on peut (et ne peut pas) conclure</h2>
+<p class="brief"><b>En bref.</b> Un bon outil pour explorer et créer des projets interactifs, pas un instrument de diagnostic.</p>
+<ul>
+  <li>Un Muse peut détecter des <strong>événements bruts et amples</strong> (clignements, regards, mâchoire) et donner une idée grossière du contenu fréquentiel. C'est une bonne base de <em>projets interactifs</em>.</li>
+  <li>Il ne permet pas de lire des pensées, des émotions ni un état mental précis à partir de quelques barres de fréquences.</li>
+  <li>Les mesures dépendent fortement du contact, de la pose et de l'environnement ; deux sessions ne se comparent qu'avec prudence <a href="sources.html#r27">[27]</a>.</li>
+  <li>Les seuils et règles de cette application sont des <strong>choix d'ingénierie</strong> raisonnables, pas des résultats validés expérimentalement : ils doivent être confrontés à tes propres enregistrements.</li>
+</ul>
+
+<div class="callout maintenance"><b>Règle de maintenance.</b> Cette page est mise à jour à chaque nouvelle fonctionnalité (avec ses sources dans <code>sources.html</code>). Une nouvelle notion se range dans l'étape du chemin du signal qui lui correspond, avec son résumé « En bref », ses liens « Dans l'application » et, si c'est utile, une simulation.</div>
+
+</article>
+<script src="../lib/signal.js"></script>
+<script src="../lib/muse.js"></script>
+<script src="../lib/filters.js"></script>
+<script src="../lib/mental-state.js"></script>
+<script src="sims.js"></script>
+</body>
+</html>

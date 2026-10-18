@@ -1,0 +1,11 @@
+﻿__pycache__/
+*.pyc
+.claude/settings.local.json
+.claude/worktrees/
+
+# Données personnelles : profils et enregistrements EEG restent en local
+profils/profils.json
+echantillons/sub-*/
+echantillons/sourcedata/
+echantillons/experience/
+echantillons/participants.tsv

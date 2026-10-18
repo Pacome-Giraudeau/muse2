@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Résultats : théorie vs réalité – Muse 2 Lab</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body>
+<article class="doc-page">
+<h1>Résultats : théorie vs réalité</h1>
+<p class="lead">Bilan des expériences qui confrontent la théorie à ce que mesure vraiment le casque. Pour chacune : la date, comment elle a été
+faite, ce qui en est sorti, la conclusion et où se trouvent les données. La physique est expliquée dans
+<a href="science.html#yeux">Comprendre la science</a>, le code dans la
+<a href="../index.html#/dev/technique" target="_top">Documentation technique &amp; specs</a>.</p>
+
+<nav class="toc">
+  <a href="#intro">1. La question et comment lire la page</a>
+  <a href="#theme-regard">2. Thème 1 : le regard (AF7 − AF8 et angle de l'œil)</a>
+  <a href="#rappel-etude">&nbsp;&nbsp;2.1 Rappel : conditions de l'étude dont vient la théorie</a>
+  <a href="#e1">&nbsp;&nbsp;2.2 E1 Observation initiale</a>
+  <a href="#e2">&nbsp;&nbsp;2.3 E2 Test du regard, 1er essai</a>
+  <a href="#e3">&nbsp;&nbsp;2.4 E3 Après retrait de la dérive</a>
+  <a href="#e4">&nbsp;&nbsp;2.5 E4 Amplitude maximale</a>
+  <a href="#e5">&nbsp;&nbsp;2.6 E5 Démonstration sur simulateur</a>
+  <a href="#conclusion-regard">&nbsp;&nbsp;2.7 Conclusion du thème Regard</a>
+  <a href="#themes-a-venir">3. Thèmes à venir</a>
+  <a href="#synthese">4. Synthèse inter-thèmes</a>
+  <a href="#ajouter">5. Ajouter une expérience</a>
+</nav>
+
+<h2 id="intro"><span class="num">1</span> La question et comment lire la page</h2>
+<p class="brief"><b>En bref.</b> La page est organisée par <strong>thèmes</strong> ; chacun confronte une théorie à ce que mesure le Muse 2. Le seul thème traité pour l'instant est le regard : la théorie de l'œil-dipôle (l'écart AF7 − AF8 est proportionnel à l'angle du regard) se vérifie-t-elle sur le Muse 2 ?</p>
+<ul>
+  <li><strong>Mesures</strong> : valeurs calculées par l'application à partir d'un enregistrement ou affichées à l'écran à la fin d'un test.
+  <strong>Observations</strong> : ce que l'utilisateur a rapporté en regardant les courbes, sans chiffres relevés. Les deux sont toujours distinguées ci-dessous.</li>
+  <li>Toutes les expériences ont été faites par l'utilisateur avec le casque Muse 2 réel, sauf E5 (simulateur, qui ne prouve rien sur la réalité).</li>
+  <li><strong>Données brutes</strong> : <code>echantillons/experience/&lt;nom&gt;/</code>, un dossier par expérience enregistrée. <code>signal.csv</code> = signal brut
+  AF7 / AF8 à 256 Hz avec la position demandée ; <code>meta.json</code> = modalités et mesures. <strong>Aucune des expériences E1 à E4 n'a de données enregistrées</strong> :
+  l'enregistrement dans <code>experience/</code> n'existait pas encore.</li>
+</ul>
+
+<h2 id="theme-regard"><span class="num">2</span> Thème 1 : le regard (écart AF7 − AF8 et angle de l'œil)</h2>
+<p class="brief"><b>En bref.</b> Théorie : l'œil est un dipôle (cornée +, rétine −) ; l'écart de potentiel mesuré entre deux électrodes de part et d'autre de l'œil croît avec l'angle du regard (électro-oculographie, EOG). Test : l'écart AF7 − AF8 du Muse 2 suit-il l'angle ? Physique : <a href="science.html#yeux">Comprendre la science : les yeux</a>.</p>
+
+<h3 id="rappel-etude">Rappel : conditions de l'étude dont vient la théorie</h3>
+<p class="brief"><b>En bref.</b> La théorie vient de l'EOG classique, mesurée avec des électrodes <strong>posées contre l'œil</strong>, pas sur le front. Seul ce qui a été retrouvé en ligne est indiqué ; le reste est marqué « non retrouvé ».</p>
+<p><strong>Étude 1, norme clinique ISCEV 2006</strong> <a href="sources.html#r22">[22]</a> (texte consulté en ligne : <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1820752" target="_blank" rel="noopener">PMC1820752</a>). C'est un test de la rétine et non de la précision du regard, mais il fixe un montage de référence.</p>
+<ul>
+  <li><strong>Électrodes</strong> : petites électrodes d'enregistrement « près des canthi de chaque œil » (coins externes) ; masse sur le front ; impédance ≤ 5 kΩ. Matériau (Ag/AgCl, gel…) : non retrouvé. Électrodes verticales : non retrouvé.</li>
+  <li><strong>Angle</strong> : deux lumières de fixation rouges à 15° à gauche et à droite du centre, alternées toutes les 1 s pendant 10 s, chaque minute.</li>
+  <li><strong>Amplitude</strong> : EOG typique « entre 250 et 1000 µV » pour des saccades de 30°. La norme ne donne pas de µV/° ; en divisant, on obtiendrait environ 8 à 33 µV/° (calcul nôtre, indicatif).</li>
+  <li><strong>Éclairage / adaptation</strong> : 15 min d'obscurité totale (lumières de fixation faibles), puis 15 min de lumière (fond ganzfeld, 100 cd/m² photopiques) ; pupilles dilatées par collyre.</li>
+  <li><strong>Tête</strong> : appui-tête / mentonnière confortable, consigne de ne pas tourner la tête.</li>
+</ul>
+<p><strong>Étude 2, Bulling et al. 2011</strong> <a href="sources.html#r23">[23]</a> (<a href="https://perceptualui.org/publications/bulling11_pami/" target="_blank" rel="noopener">page de la publication</a>). Retrouvé (résumé seulement) : système EOG portable, étude à 8 participants dans un bureau, 5 activités (copier un texte, lire, prendre des notes, regarder une vidéo, naviguer sur le web) plus repos ; détection de saccades, fixations et clignements. <strong>Non retrouvé</strong> (texte complet inaccessible) : type d'électrodes, positions horizontale et verticale, référence, fréquence d'échantillonnage, amplitude des saccades, éclairage, fixation de la tête, sensibilité en µV/°.</p>
+
+<table>
+  <tr><th></th><th>Conditions de la théorie</th><th>Nos conditions (Muse 2)</th></tr>
+  <tr><th>Emplacement</th><td>Près des canthi externes de chaque œil (ISCEV [22]) ; verticalement, autour de l'œil : non retrouvé.</td><td>AF7 / AF8 sur le front, au-dessus des sourcils, à plusieurs centimètres des yeux.</td></tr>
+  <tr><th>Type d'électrodes</th><td>Petites électrodes d'enregistrement, impédance ≤ 5 kΩ ; matériau non retrouvé.</td><td>Électrodes sèches en tissu, impédance non contrôlée (seul un indicateur de contact est affiché).</td></tr>
+  <tr><th>Référence / masse</th><td>Masse sur le front (ISCEV [22]) ; référence de [23] : non retrouvée.</td><td>Référence Fpz, masse FP1/FP2, d'après des articles décrivant le Muse (relevé par moteur de recherche, pas la fiche du fabricant). Mesure par l'écart AF7 − AF8, pas par une paire de part et d'autre de l'œil.</td></tr>
+  <tr><th>Angle du regard</th><td>±15° (ISCEV) ; 30° pour l'amplitude citée.</td><td>±14,9° par défaut (écran de 34 cm à 60 cm, non mesuré) ; E4 : « aussi loin que possible », angle non consigné.</td></tr>
+  <tr><th>Tête</th><td>Appui-tête / mentonnière ; consigne de ne pas tourner la tête.</td><td>Tête libre ; mouvement mesuré par le gyroscope (5,9 °/s rms en E2).</td></tr>
+  <tr><th>Éclairage, pupilles</th><td>15 min d'obscurité puis 15 min de lumière ; pupilles dilatées.</td><td>Éclairage de la pièce, non contrôlé ni consigné ; pupilles normales.</td></tr>
+  <tr><th>Durée / mesure</th><td>Alternance 1 s sur 10 s, chaque minute, sur 30 min ; amplitude des saccades.</td><td>38 s : 8 fixations de 3 s puis un balayage ; corrélation, gain et retard avec une droite théorique.</td></tr>
+  <tr><th>Sujets</th><td>Sujets cliniques (ISCEV) ; 8 participants pour [23].</td><td>Une seule personne, un seul casque.</td></tr>
+</table>
+<p><strong>Lecture.</strong> Notre montage diffère de celui de la théorie par l'emplacement (front, loin du dipôle), le type d'électrodes, la référence et l'absence de contrôle de la tête et de la lumière. <em>Hypothèse, à tester, non démontrée</em> : cette différence de montage expliquerait que l'écart AF7 − AF8 ne suive pas l'angle (E2 à E4). Aucune comparaison avec des électrodes placées aux canthi n'a été faite.</p>
+
+<h3 id="e1"> E1 : Observation initiale (avant le 8 octobre 2026)</h3>
+<p class="brief"><b>En bref.</b> Sur casque réel, la détection des regards ne fonctionnait pas ; ce qu'elle capte ressemble au clignement.</p>
+<table>
+  <tr><th>Date</th><td>Avant le 8 oct. 2026 (date exacte non consignée).</td></tr>
+  <tr><th>Modalités</th><td>Détection des regards de la calibration et du jeu des artefacts, casque réel. Modalités précises non consignées.</td></tr>
+  <tr><th>Résultat (observation)</th><td>Retour : « aucun regard ne passe ». Puis l'utilisateur a observé que la détection des regards semble capter un signal <em>similaire</em>, mais pas identique, à celui du clignement.</td></tr>
+  <tr><th>Conclusion</th><td>Piste, <strong>hypothèse non vérifiée</strong> : ce que l'application détecte comme « regard » serait plutôt un artefact frontal proche du clignement (paupières, muscles) qu'une vraie déviation oculaire.</td></tr>
+  <tr><th>Données</th><td>Aucune (rien d'enregistré).</td></tr>
+</table>
+
+<h3 id="e2"> E2 : Test du regard, 8 octobre 2026, 1er essai</h3>
+<p class="brief"><b>En bref.</b> Premier test complet du projet Regard : la théorie n'est pas confirmée, mais l'analyse d'alors ne retirait pas la dérive.</p>
+<table>
+  <tr><th>Date</th><td>8 oct. 2026.</td></tr>
+  <tr><th>Modalités</th><td>Projet <a href="../index.html#/p/regard" target="_top">Regard</a>, 38 s : 2 s au centre, 8 fixations de 3 s aux positions 0,5 · 1 · 0,5 · 0 · −0,5 · −1 · −0,5 · 0, puis balayage sinusoïdal de 12 s.
+  Écran de 34 cm à 60 cm (réglage par défaut, non mesuré), donc demi-angle 14,9° ; théorie 2,5 µV/° (valeur d'illustration), soit 37 µV pour ±1.
+  Sans calibration préalable. Analyse de l'époque <strong>sans retrait de dérive</strong>.</td></tr>
+  <tr><th>Résultat (mesures)</th><td>
+    <table>
+      <tr><td>Corrélation r</td><td>−0,06</td></tr>
+      <tr><td>Gain</td><td>2 µV pour ±1 (0,1 µV/° contre 2,5 attendu : ×0,04)</td></tr>
+      <tr><td>Écart du modèle</td><td>16,2 µV</td></tr>
+      <tr><td>Retard</td><td>600 ms (butée de la recherche, donc sans signification)</td></tr>
+      <tr><td>Affaissement</td><td>−11 %</td></tr>
+      <tr><td>Asymétrie</td><td>gauche 4 µV / droite 1 µV (114 %)</td></tr>
+      <tr><td>Bruit au centre</td><td>26,7 µV</td></tr>
+      <tr><td>Contact</td><td>AF7 bon, AF8 bon, TP9 moyen</td></tr>
+      <tr><td>Tête</td><td>5,9 °/s rms</td></tr>
+      <tr><td>Clignements</td><td>3</td></tr>
+      <tr><td>Verdict de l'application</td><td>faible</td></tr>
+    </table></td></tr>
+  <tr><th>Conclusion</th><td>Théorie <strong>non confirmée</strong>. Comme l'analyse ne retirait pas la dérive, <strong>non concluant sur la cause</strong>.</td></tr>
+  <tr><th>Données</th><td>Non enregistrées (seuls les chiffres ci-dessus ont été relevés).</td></tr>
+</table>
+
+<h3 id="e3"> E3 : Même test après retrait de la dérive, 8 octobre 2026</h3>
+<p class="brief"><b>En bref.</b> Même avec la dérive retirée, la courbe réelle ne suit pas les paliers.</p>
+<table>
+  <tr><th>Date</th><td>8 oct. 2026.</td></tr>
+  <tr><th>Modalités</th><td>Même test que E2 ; l'analyse retire désormais une dérive cubique et les pics.</td></tr>
+  <tr><th>Résultat (observation)</th><td>La courbe réelle (verte) reste <strong>stable</strong> et ne suit pas du tout les paliers. Aucun chiffre relevé.</td></tr>
+  <tr><th>Conclusion</th><td>La dérive n'était pas la cause ; le regard ne laisse presque aucune trace visible dans AF7 − AF8.</td></tr>
+  <tr><th>Données</th><td>Aucune (pas d'enregistrement).</td></tr>
+</table>
+
+<h3 id="e4"> E4 : Test d'amplitude maximale, 8 octobre 2026</h3>
+<p class="brief"><b>En bref.</b> Même en regardant aussi loin que possible, rien d'exploitable.</p>
+<table>
+  <tr><th>Date</th><td>8 oct. 2026.</td></tr>
+  <tr><th>Modalités</th><td>L'utilisateur a regardé aussi loin que possible. Angle exact et nombre d'essais non consignés.</td></tr>
+  <tr><th>Résultat (observation)</th><td>Retour : « ne donne rien ». Aucun chiffre.</td></tr>
+  <tr><th>Conclusion</th><td>Même avec de grands angles, rien d'exploitable.</td></tr>
+  <tr><th>Données</th><td>Aucune.</td></tr>
+</table>
+
+<h3 id="e5"> E5 : Démonstration sur simulateur</h3>
+<p class="brief"><b>En bref.</b> Ce n'est <strong>pas la réalité</strong> : cela valide seulement la chaîne de calcul.</p>
+<table>
+  <tr><th>Date</th><td>8 oct. 2026 (développement).</td></tr>
+  <tr><th>Modalités</th><td>Simulateur, gain réglé à 60 µV (un réglage, pas une mesure).</td></tr>
+  <tr><th>Résultat (mesures)</th><td>Calibration : r = 0,99, gain 62 µV, retard 100 ms. Test : r = 0,99, ×1,64 la théorie. Avec la dérive et les pics du simulateur par défaut : r = 0,24 (d'où la correction de dérive).</td></tr>
+  <tr><th>Conclusion</th><td>L'analyse retrouve ce que le simulateur injecte ; cela ne dit rien sur le Muse réel.</td></tr>
+  <tr><th>Données</th><td>Aucune (la démonstration n'enregistre rien).</td></tr>
+</table>
+
+<h3 id="e6"> E6 : Impulsions de regard dans les séances annotées</h3>
+<p class="brief"><b>En bref.</b> Dans les séances annotées, le « regard » est une impulsion brève suivie d'un retour de signe opposé, plus grand que l'aller sur la fenêtre habituelle : d'où la calibration par regards « secs » et le vote sur la première impulsion.</p>
+<table>
+  <tr><th>Date</th><td>8 oct. 2026 (analyse de séances déjà enregistrées).</td></tr>
+  <tr><th>Modalités</th><td>3 séances annotées de la même personne (profil Pacôme p3, casque Muse 2) : <code>echantillons/sourcedata</code> annotation-20261008-1410 (forcé), -1429 (spontané), -1648 (spontané) ; 24 essais de regard. Pic et signe mesurés sur des trames à 32 Hz (les pics brefs sont sous-échantillonnés : valeurs par défaut).</td></tr>
+  <tr><th>Résultat (mesures)</th><td>
+    <ul>
+      <li>Dans <strong>24 essais sur 24</strong>, le pic de sens opposé (le retour) dépasse le pic du bon sens en prenant le maximum sur la fenêtre marquée + 1 s de queue (rapport typique 1,1 à 1,5 ; jusqu'à 6).</li>
+      <li>La <strong>première impulsion</strong> fait environ 100 à 125 µV ; son signe correspond au sens +1 dans <strong>21 essais sur 24</strong> (7 sur 10 sur la séance de 16:46).</li>
+      <li>Profil p3 : après la calibration de 16:43, <code>gazeSign</code> = −1 (l'ancien valait +1) ; l'étape regard de cette calibration avait échoué. Avec −1 : 0 regard correct sur 10 sur la séance de 16:46 ; avec +1 : 15 fenêtres de geste détectées sur 20 sur cette séance.</li>
+      <li>Estimation <strong>sans casque</strong> du nouveau calibrage (mêmes règles appliquées aux impulsions annotées, détecteur actuel, calibration p3 de 16:43 pour le reste, seuil de regard ≈ 50 µV, sens +1) : 45/52 fenêtres de geste détectées contre 29/52 avec le profil tel quel (<code>gazeSign</code> −1) ; regard gauche 10/13, droit 10/11 ; fausses détections 33-34 contre 46. Seuils calculés sur la séance de 16:46 puis testés sur les séances 1-2 (hors échantillon pour celles-ci) : regard 12/14 ; calculés sur les séances 1-2 puis testés sur celle de 16:46 : 8/10.</li>
+    </ul></td></tr>
+  <tr><th>Interprétation (probable, non prouvée)</th><td>Le retour des yeux au centre laisse une impulsion de signe opposé plus grande que l'aller sur la fenêtre habituelle ; un vote ou une corrélation qui prend le maximum sur toute la fenêtre ou la queue retourne donc le signe. Suivre un point qui glisse ne convient pas ; seules des saccades larges laissent une trace. La calibration dynamique (<code>dynamicDate</code> 16:45) aurait retourné <code>gazeSign</code> à chaque série d'essais en votant sur le maximum de la queue (déduit du code et des données ; le jeu n'a pas été rejoué). Les seuils des règles de forme du détecteur sont probables, non prouvés.</td></tr>
+  <tr><th>Conséquence</th><td>Étape « Regards secs » (10 sauts du point, première impulsion) et vote du jeu des artefacts sur la première impulsion : <a href="technique.html#calibration">technique</a>, <a href="science.html#calibration">science</a>.</td></tr>
+  <tr><th>Limites</th><td>La simulation vient des impulsions annotées (fenêtre = geste marqué par la personne) et n'est pas un essai du nouveau protocole, <strong>jamais lancé sur casque réel</strong>. Une personne, un casque. Concordance de signe de 7/10 seulement le 16:46 : l'étape pourrait échouer en « sens incohérent » (seuil de 80 %), à vérifier sur casque. Les valeurs 0,6 / 0,25 s / 1 s / 80 % / 3 impulsions / 1,2 s / 3 s sont choisies a priori. Le geste demandé n'a pas été validé par l'utilisateur.</td></tr>
+  <tr><th>Données</th><td><code>echantillons/sourcedata</code> (séances annotation-20261008-1410, -1429, -1648).</td></tr>
+</table>
+
+<h3 id="conclusion-regard">Conclusion du thème Regard</h3>
+<p class="brief"><b>En bref.</b> Sur ce casque, la proportionnalité « écart AF7 − AF8 = gain × angle » n'est pas observée.</p>
+<ul>
+  <li><strong>Hypothèse principale, non confirmée</strong> : les électrodes frontales sont trop éloignées du dipôle de l'œil et le signal du regard passe sous le bruit
+  (gain mesuré ≈ 2 µV pour ±1 contre 26,7 µV de bruit au centre, en E2).</li>
+  <li>Le « regard » détecté jusqu'ici ressemble à un signal de type clignement (E1, observation). Conséquence : les détections de regard (jeu des artefacts, calibration)
+  reposent sur un signal dont <strong>l'origine n'est pas établie</strong>.</li>
+  <li><strong>E6</strong> (mesures) : seules les saccades larges laissent une trace, une impulsion brève suivie d'un retour de signe opposé, plus grand que l'aller sur la fenêtre habituelle (24 essais sur 24) ; la première impulsion garde le bon signe dans 21 essais sur 24. La calibration du regard repose donc sur des regards secs, non sur un point qui glisse ; effet attendu estimé <em>sans casque</em> seulement (45/52 contre 29/52).</li>
+  <li>Limites : une seule personne, un seul casque, des modalités en partie non consignées, un seul jeu de chiffres (E2), aucune donnée brute conservée.</li>
+  <li><strong>Suites</strong> : refaire les tests, désormais <em>enregistrés</em> dans <code>echantillons/experience/&lt;nom&gt;/</code> (casque seulement) ; ajouter un rapport
+  signal/bruit ; comparer la forme du « regard » à celle du clignement.</li>
+</ul>
+
+
+<h2 id="themes-a-venir"><span class="num">3</span> Thèmes à venir</h2>
+<p class="brief"><b>Réservé.</b> Aucun autre résultat pour l'instant. Thèmes envisagés (sans résultat à ce jour) : états mentaux, artefacts (clignements, mâchoire), pouls (PPG), contact et bruit des électrodes.</p>
+
+<h2 id="synthese"><span class="num">4</span> Synthèse inter-thèmes</h2>
+<p class="brief"><b>En bref.</b> Un seul thème (le regard) : rien à comparer pour l'instant. Avec plusieurs thèmes, cette section résumera ce qui est confirmé, infirmé ou incertain, avec renvoi vers la conclusion de chaque thème.</p>
+
+<h2 id="ajouter"><span class="num">5</span> Ajouter une expérience</h2>
+<p class="brief"><b>Consigne.</b> Après chaque expérience théorie/réalité, ajouter son bloc à cette page (date, modalités, mesures et observations séparées, conclusion, dossier de données).</p>
+<ul>
+  <li><strong>Nouveau thème</strong> : un bloc <code>&lt;h2 id="theme-…"&gt;</code> placé avant « Thèmes à venir », avec le rappel des conditions de l'étude dont vient la théorie, ses expériences et sa propre conclusion ; l'ajouter au sommaire et renuméroter.</li>
+  <li><strong>Nouvelle expérience</strong> : une sous-section <code>&lt;h3 id="eN"&gt;</code> dans son thème, avant la conclusion du thème (numéros E à la suite, ancres existantes inchangées).</li>
+  <li>La conclusion propre à un thème reste dans son bloc ; la synthèse inter-thèmes (section 4) est mise à jour en dernier.</li>
+</ul>
+<p>Le projet Regard enregistre automatiquement un test fait avec le casque dans <code>echantillons/experience/&lt;nom&gt;/</code> ; renseigner le nom et les modalités avant de lancer. Reporter le nom du dossier dans le bloc.</p>
+
+<p class="in-app">Dans l'application : <a href="../index.html#/p/regard" target="_top">Regard : théorie et réalité</a> ·
+<a href="science.html#yeux">Comprendre la science : les yeux</a> · <a href="../index.html#/dev/technique" target="_top">Documentation technique &amp; specs</a>.</p>
+</article>
+</body>
+</html>

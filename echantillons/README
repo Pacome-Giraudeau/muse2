@@ -1,0 +1,4 @@
+Échantillons enregistrés avec un casque Muse 2 (InteraXon) par Muse 2 Lab.
+
+Organisation BIDS-EEG : sub-01/eeg/ contient, pour chaque échantillon, le signal (.edf, EDF+), sa fiche (_eeg.json), ses canaux (_channels.tsv) et ses événements (_events.tsv). Le numéro d’échantillon sert d’index de « run ».
+sourcedata/ contient chaque échantillon complet au format interne (.muse2.json : horodatages exacts, notes, réglages).

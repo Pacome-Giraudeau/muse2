@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python tools/check.py)",
+      "Bash(python tools/check.py:*)",
+      "Bash(python tools/shot.py:*)",
+      "Bash(python tools/sections.py:*)",
+      "Bash(python tools/entete.py:*)",
+      "Bash(python tools/journal.py:*)",
+      "Bash(python tests/run_tests.py)"
+    ]
+  }
+}

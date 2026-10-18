@@ -1,0 +1,73 @@
+/* Mise en page des pages de documentation (docs/*.html). S'utilise avec assets/style.css. */
+.doc-page { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+.doc-page h1 { font-size: 26px; margin: 0 0 4px; }
+.doc-page .lead { color: var(--muted); margin: 0 0 20px; }
+.doc-page h2 { font-size: 20px; margin: 36px 0 8px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--text); }
+.doc-page h3 { font-size: 16px; margin: 22px 0 6px; }
+.doc-page p, .doc-page li { line-height: 1.65; }
+.doc-page code { background: var(--panel); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; font-size: 13px; }
+.doc-page pre { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 13px; line-height: 1.5; }
+.doc-page pre code { border: 0; padding: 0; background: none; }
+.doc-page a { color: var(--accent); }
+.doc-page table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 14px; }
+.doc-page th, .doc-page td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+.doc-page th { background: var(--panel); font-weight: 600; }
+.toc { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; margin: 16px 0; columns: 2; font-size: 14px; }
+.toc a { display: block; padding: 1px 0; }
+@media (max-width: 600px) { .toc { columns: 1; } }
+.callout { border-left: 4px solid var(--accent); background: var(--panel); border-radius: 0 8px 8px 0; padding: 8px 14px; margin: 14px 0; }
+.callout.warn { border-left-color: #e0a02c; }
+.callout.maintenance { border-left-color: var(--good); }
+.flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 6px; margin: 14px 0; }
+.flow div { flex: 1 1 120px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 13px; text-align: center; }
+.flow div b { display: block; font-size: 13px; }
+.flow .arrow { flex: 0 0 auto; min-width: 0; background: none; border: 0; padding: 8px 0; color: var(--muted); align-self: center; }
+.formula { text-align: center; font-family: "Cambria Math", "STIX Two Math", serif; font-size: 17px; margin: 12px 0; }
+.tag-ok { color: var(--good); font-weight: 600; }
+.tag-todo { color: #b36b00; font-weight: 600; }
+.refs { padding-left: 1.2em; }
+.refs li { margin: 8px 0; }
+
+/* Simulations interactives (docs/sims.js) */
+.sim { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 10px; padding: 10px 14px 12px; margin: 18px 0; }
+.sim h4 { margin: 0 0 6px; font-size: 14px; color: var(--accent); }
+.sim-canvas { width: 100%; display: block; background: var(--bg); border-radius: 8px; margin: 6px 0; }
+.sim-row { display: grid; grid-template-columns: minmax(180px, 240px) 1fr; gap: 10px; }
+@media (max-width: 640px) { .sim-row { grid-template-columns: 1fr; } }
+.sim-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; font-size: 13px; margin-top: 6px; }
+.sim-controls label { display: inline-flex; align-items: center; gap: 6px; }
+.sim-controls input[type=range] { width: 130px; }
+.sim-controls b { min-width: 2.2em; display: inline-block; text-align: right; font-variant-numeric: tabular-nums; }
+.sim-controls .btn { padding: 5px 14px; font-size: 13px; }
+.sim-readout { font-size: 13px; color: var(--muted); margin: 8px 0 0; line-height: 1.55; }
+.sim .warn { color: #b36b00; }
+
+.sim-mental .sim-state { display: inline-flex; align-items: center; gap: 10px; border: 2px solid; border-radius: 10px; padding: 6px 14px; margin: 4px 0 8px; font-size: 18px; }
+.sim-mental .sim-state span { font-size: 30px; }
+.sim-mental .gauge { display: grid; grid-template-columns: 170px 1fr 60px; gap: 10px; align-items: center; margin: 6px 0; font-size: 13px; }
+.sim-mental .gauge b { text-align: right; font-variant-numeric: tabular-nums; }
+.sim-mental .gauge-track { position: relative; height: 12px; background: var(--bg); border-radius: 6px; overflow: hidden; }
+.sim-mental .gauge-track::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--line); }
+.sim-mental .gauge-fill { position: absolute; top: 2px; bottom: 2px; border-radius: 4px; }
+.sim-mental .gauge-mark { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--muted); opacity: .6; }
+.sim-mental .gauge-mark.l { left: 41%; } .sim-mental .gauge-mark.r { left: 59%; }
+
+/* Organisation des pages de documentation : étapes / parties, résumés, liens vers l'application */
+.journey { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0; counter-reset: none; }
+.journey a { flex: 1 1 140px; display: flex; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 13px; color: var(--text); text-decoration: none; }
+.journey a:hover { border-color: var(--accent); }
+.journey a span { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
+.toc-parts { columns: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px 18px; }
+.toc-parts div b a { color: var(--text); }
+.toc-parts div a { display: block; padding: 1px 0; }
+.toc-parts div > a { padding-left: 10px; }
+.part-head { margin: 46px 0 6px; padding: 14px 16px; border-radius: 12px; background: linear-gradient(90deg, rgba(91,108,255,0.16), transparent); border-left: 4px solid var(--accent); }
+.part-head span { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); font-weight: 700; }
+.part-head .part-title { font-size: 22px; font-weight: 700; margin: 2px 0; }
+.part-head p { margin: 0; color: var(--muted); }
+.doc-page h2 .num { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line); font-size: 14px; margin-right: 6px; vertical-align: 2px; }
+.brief { background: var(--panel); border-radius: 8px; padding: 8px 12px; margin: 6px 0 12px; font-size: 15px; }
+.in-app { font-size: 14px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 8px; margin-top: 14px; }
+.quick { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+.quick a { padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); text-decoration: none; }
+.quick a:hover { border-color: var(--accent); }

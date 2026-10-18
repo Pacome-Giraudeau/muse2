@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sources et littérature – Muse 2 Lab</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body>
+<article class="doc-page">
+
+<h1>Sources et littérature</h1>
+<p class="lead">Les références sur lesquelles s'appuient les explications de <a href="science.html">Comprendre la science</a> et les choix de la <a href="technique.html">documentation technique</a>.</p>
+
+<div class="callout maintenance"><b>Règle de maintenance.</b> Toute nouvelle fonctionnalité qui s'appuie sur une notion scientifique ou technique ajoute ses références ici, avec le même numéro que celui cité dans les autres pages.</div>
+
+<div class="callout warn"><b>État de vérification.</b> Les références marquées <span class="tag-ok">✔ vérifiée</span> ont été retrouvées en ligne (titre, auteurs, revue, pages) lors de la rédaction.
+Celles marquées <span class="tag-todo">à vérifier</span> sont citées de mémoire : elles sont réelles à ma connaissance, mais la page, le volume ou l'année peuvent comporter une erreur. Vérifie-les (PubMed, Google Scholar) avant tout usage académique.</div>
+
+<nav class="toc">
+  <a href="#cerveau">A. Cerveau et EEG</a>
+  <a href="#muse">B. Le Muse 2</a>
+  <a href="#signal">C. Traitement du signal</a>
+  <a href="#artefacts">D. Artefacts oculaires et musculaires</a>
+  <a href="#ppg">E. Pouls</a>
+  <a href="#ble">F. Bluetooth</a>
+  <a href="#limites">G. Limites des appareils grand public</a>
+  <a href="#usage">H. Utilisation du casque</a>
+  <a href="#filtrage">I. Amélioration du signal</a>
+  <a href="#stockage">J. Stockage</a>
+  <a href="#normes">K. Formats et normes de données</a>
+  <a href="#etats">L. États mentaux</a>
+  <a href="#fichiers">M. Fichiers sur le disque</a>
+  <a href="#calibration-alpha">N. Calibration et rythme alpha</a>
+  <a href="#fiabilite">O. Fiabilité des mesures</a>
+  <a href="#annotation-bids">P. Annotation de gestes</a>
+  <a href="#orientation-tete">Q. Orientation de la tête</a>
+</nav>
+
+<h2 id="cerveau">A. Cerveau et EEG</h2>
+<ol class="refs" start="1">
+  <li id="r1"><span class="tag-todo">à vérifier</span> Berger H. (1929). Über das Elektrenkephalogramm des Menschen. <em>Archiv für Psychiatrie und Nervenkrankheiten</em>, 87, 527–570. — Premier EEG humain, découverte du rythme alpha.</li>
+  <li id="r2"><span class="tag-todo">à vérifier</span> Jasper H. H. (1958). The ten-twenty electrode system of the International Federation. <em>Electroencephalography and Clinical Neurophysiology</em>, 10, 371–375. — Système 10-20 de placement des électrodes.</li>
+  <li id="r3"><span class="tag-todo">à vérifier</span> Buzsáki G., Anastassiou C. A., Koch C. (2012). The origin of extracellular fields and currents — EEG, ECoG, LFP and spikes. <em>Nature Reviews Neuroscience</em>, 13, 407–420. — D'où vient le champ électrique mesuré.</li>
+  <li id="r4"><span class="tag-todo">à vérifier</span> Nunez P. L., Srinivasan R. (2006). <em>Electric Fields of the Brain: The Neurophysics of EEG</em> (2<sup>e</sup> éd.). Oxford University Press. — Référence sur la physique de l'EEG et la conduction à travers le crâne.</li>
+</ol>
+
+<h2 id="muse">B. Le Muse 2</h2>
+<ol class="refs" start="5">
+  <li id="r5"><span class="tag-ok">✔ vérifiée</span> Krigolson O. E., Williams C. C., Norton A., Hassall C. D., Colino F. L. (2017). Choosing MUSE: Validation of a low-cost, portable EEG system for ERP research. <em>Frontiers in Neuroscience</em>, 11, 109.
+    <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5344886/" target="_blank" rel="noopener">PMC5344886</a> — Un Muse permet d'observer certains potentiels évoqués (N200, P300) en moyennant de nombreux essais.</li>
+  <li id="r6"><span class="tag-ok">✔ vérifiée</span> InteraXon. <em>Muse 2 Specifications</em>. Copie hébergée par un tiers :
+    <a href="https://ifelldh.tec.mx/sites/g/files/vgjovo1101/files/Muse_2_Specifications.pdf" target="_blank" rel="noopener">Muse_2_Specifications.pdf</a> — EEG 4 canaux 256 Hz 12 bits ; accéléromètre et gyroscope 52 Hz 16 bits (±2 g, ±250 °/s) ; PPG trois longueurs d'onde, 64 Hz ; BLE. (Document du fabricant ; version la plus récente à consulter sur son site.)</li>
+  <li id="r7"><span class="tag-ok">✔ vérifiée</span> Shaked U. et contributeurs. <em>muse-js</em>, bibliothèque JavaScript Web Bluetooth pour Muse 1, 2 et S.
+    <a href="https://github.com/urish/muse-js" target="_blank" rel="noopener">github.com/urish/muse-js</a> — Source du protocole GATT utilisé par <code>lib/muse.js</code> (UUID, formats de paquets, nommage ambiant/infrarouge/rouge du PPG). Le numéro de séquence 16 bits en tête de chaque paquet EEG y est lu (<code>getUint16(0)</code>, champ <code>index</code>) ; <code>lib/muse.js</code> s'en sert pour repérer les paquets perdus.</li>
+</ol>
+
+<h2 id="signal">C. Traitement du signal</h2>
+<ol class="refs" start="8">
+  <li id="r8"><span class="tag-ok">✔ vérifiée</span> Kappenman E. S., Luck S. J. (2010). The effects of electrode impedance on data quality and statistical significance in ERP recordings. <em>Psychophysiology</em>, 47, 888–904.
+    <a href="https://erpinfo.org/s/Kappenman-2010-Psychophys-Impedance-p398.pdf" target="_blank" rel="noopener">PDF (erpinfo.org)</a> — Une impédance élevée augmente le bruit, surtout aux basses fréquences en environnement chaud et humide.</li>
+  <li id="r9"><span class="tag-todo">à vérifier</span> Searle A., Kirkup L. (2000). A direct comparison of wet, dry and insulating bioelectric recording electrodes. <em>Physiological Measurement</em>, 21, 271–283. — Comparaison électrodes à gel, sèches et isolantes.</li>
+  <li id="r10"><span class="tag-todo">à vérifier</span> Shannon C. E. (1949). Communication in the presence of noise. <em>Proceedings of the IRE</em>, 37, 10–21. — Théorème d'échantillonnage.</li>
+  <li id="r11"><span class="tag-todo">à vérifier</span> Oppenheim A. V., Schafer R. W. (2010). <em>Discrete-Time Signal Processing</em> (3<sup>e</sup> éd.). Pearson. — Filtres numériques (dont les filtres du premier ordre).</li>
+  <li id="r12"><span class="tag-todo">à vérifier</span> Cooley J. W., Tukey J. W. (1965). An algorithm for the machine calculation of complex Fourier series. <em>Mathematics of Computation</em>, 19, 297–301. — La FFT.</li>
+  <li id="r13"><span class="tag-todo">à vérifier</span> Harris F. J. (1978). On the use of windows for harmonic analysis with the discrete Fourier transform. <em>Proceedings of the IEEE</em>, 66(1), 51–83. — Fenêtres (dont Hann).</li>
+  <li id="r14"><span class="tag-ok">✔ vérifiée</span> Welch P. D. (1967). The use of fast Fourier transform for the estimation of power spectra: a method based on time averaging over short, modified periodograms. <em>IEEE Transactions on Audio and Electroacoustics</em>, 15, 70–73.
+    <a href="https://ieeexplore.ieee.org/document/1161899" target="_blank" rel="noopener">IEEE Xplore</a> — Moyenne des périodogrammes de segments fenêtrés pour réduire le bruit d'estimation du spectre (base du rejet par segment de l'état mental).</li>
+  <li id="r15"><span class="tag-todo">à vérifier</span> Klimesch W. (1999). EEG alpha and theta oscillations reflect cognitive and memory performance: a review and analysis. <em>Brain Research Reviews</em>, 29, 169–195. — Associations alpha / theta et cognition.</li>
+</ol>
+
+<h2 id="artefacts">D. Artefacts oculaires et musculaires</h2>
+<ol class="refs" start="16">
+  <li id="r16"><span class="tag-todo">à vérifier</span> Croft R. J., Barry R. J. (2000). Removal of ocular artifact from the EEG: a review. <em>Neurophysiologie Clinique</em>, 30, 5–19.</li>
+  <li id="r17"><span class="tag-todo">à vérifier</span> Urigüen J. A., Garcia-Zapirain B. (2015). EEG artifact removal — state-of-the-art and guidelines. <em>Journal of Neural Engineering</em>, 12, 031001.</li>
+  <li id="r18"><span class="tag-ok">✔ vérifiée</span> Whitham E. M. et al. (2007). Scalp electrical recording during paralysis: quantitative evidence that EEG frequencies above 20 Hz are contaminated by EMG. <em>Clinical Neurophysiology</em>, 118(8), 1877–1888.
+    <a href="https://pubmed.ncbi.nlm.nih.gov/17574912" target="_blank" rel="noopener">PubMed 17574912</a> — Au-dessus de 20 Hz, l'essentiel de l'enregistrement du cuir chevelu est d'origine musculaire.</li>
+  <li id="r19"><span class="tag-todo">à vérifier</span> Muthukumaraswamy S. D. (2013). High-frequency brain activity and muscle artifacts in MEG/EEG: a review and recommendations. <em>Frontiers in Human Neuroscience</em>, 7, 138.</li>
+  <li id="r20"><span class="tag-todo">à vérifier</span> Iwasaki M. et al. (2005). Effects of eyelid closure, blinks, and eye movements on the electroencephalogram. <em>Clinical Neurophysiology</em>, 116, 878–885. — <small>Une recherche en ligne n'a pas permis de la retrouver lors de la rédaction : à confirmer avant de s'y fier.</small></li>
+  <li id="r21"><span class="tag-todo">à vérifier</span> Matsuo F., Peters J. F., Reilly E. L. (1975). Electrical phenomena associated with movements of the eyelid. <em>Electroencephalography and Clinical Neurophysiology</em>, 38, 507–511.</li>
+  <li id="r22"><span class="tag-ok">✔ vérifiée</span> Brown M., Marmor M., Vaegan, Zrenner E., Brigell M., Bach M. (2006). ISCEV standard for clinical electro-oculography (EOG) 2006. <em>Documenta Ophthalmologica</em>, 113, 205–212.
+    <a href="https://doi.org/10.1007/s10633-006-9030-0" target="_blank" rel="noopener">doi:10.1007/s10633-006-9030-0</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1820752" target="_blank" rel="noopener">PMC1820752</a> — Électro-oculographie : dipôle cornéo-rétinien ; conditions (électrodes aux canthi, fixations à ±15°, 15 min d'obscurité puis de lumière) reprises dans <a href="resultats.html#rappel-etude">Résultats</a>.</li>
+  <li id="r23"><span class="tag-ok">✔ vérifiée</span> Bulling A., Ward J. A., Gellersen H., Tröster G. (2011). Eye movement analysis for activity recognition using electrooculography. <em>IEEE Transactions on Pattern Analysis and Machine Intelligence</em>, 33(4), 741–753.
+    <a href="https://perceptualui.org/publications/bulling11_pami/" target="_blank" rel="noopener">perceptualui.org</a> — Détection de saccades, fixations et clignements à partir de l'EOG.</li>
+</ol>
+
+<h2 id="ppg">E. Pouls</h2>
+<ol class="refs" start="24">
+  <li id="r24"><span class="tag-ok">✔ vérifiée</span> Allen J. (2007). Photoplethysmography and its application in clinical physiological measurement. <em>Physiological Measurement</em>, 28(3), R1–R39.
+    <a href="https://pubmed.ncbi.nlm.nih.gov/17322588/" target="_blank" rel="noopener">PubMed 17322588</a> — Principe de la PPG : composante pulsée (AC) et lente (DC).</li>
+</ol>
+
+<h2 id="ble">F. Bluetooth</h2>
+<ol class="refs" start="25">
+  <li id="r25"><span class="tag-todo">à vérifier</span> Townsend K., Cufí C., Akiba, Davidson R. (2014). <em>Getting Started with Bluetooth Low Energy</em>. O'Reilly Media. — Introduction au BLE (GATT, notifications, saut de fréquence).</li>
+  <li id="r26"><span class="tag-todo">à vérifier</span> Web Bluetooth Community Group. <em>Web Bluetooth</em> (spécification). <a href="https://webbluetoothcg.github.io/web-bluetooth/" target="_blank" rel="noopener">webbluetoothcg.github.io/web-bluetooth</a> — API utilisée par <code>lib/muse.js</code>.</li>
+</ol>
+
+<h2 id="limites">G. Limites des appareils grand public</h2>
+<ol class="refs" start="27">
+  <li id="r27"><span class="tag-todo">à vérifier</span> Cannard C., Brandmeyer T., Wahbeh H., Delorme A. (2020). Self-health monitoring and wearable neurotechnologies. <em>Handbook of Clinical Neurology</em>, 168, 207–232. — Possibilités et limites des neurotechnologies portables.</li>
+</ol>
+
+<h2 id="usage">H. Utilisation du casque</h2>
+<ol class="refs" start="28">
+  <li id="r28"><span class="tag-ok">✔ vérifiée</span> InteraXon / Muse. <em>Muse 2 Starter Guide</em>.
+    <a href="https://choosemuse.com/blog/muse-2-starter-guide/" target="_blank" rel="noopener">choosemuse.com/blog/muse-2-starter-guide</a> — Allumage (bouton à côté du port de charge), lumières bleues qui défilent, niveau de batterie par le nombre de voyants (3 = plein), pose (milieu du front, embouts derrière les oreilles, cheveux dégagés), attente de 30 à 60 s, mouchoir humide. Les motifs de voyants pour la charge et l'appairage n'y sont pas détaillés.</li>
+  <li id="r29"><span class="tag-todo">partiellement vérifiée</span> InteraXon. Documentation développeur Muse, « Available Data » (indicateurs <code>horseshoe</code> et <code>is_good</code>), reprise par l'appli tierce Mind Monitor (<a href="https://mind-monitor.com/Technical_Manual.php" target="_blank" rel="noopener">Technical Manual</a>). — <code>horseshoe</code> : 1 = bon, 2 = moyen, 4 = mauvais (≥ 3 = mauvais), 10 Hz, par électrode ; <code>is_good</code> : indicateur strict 0/1. Affichage : pastille pleine = bon, contour = faible, vide = pas de contact. <small>Contenu obtenu via les résumés d'un moteur de recherche : les pages originales (developer.choosemuse.com, désormais redirigée ; mind-monitor.com) n'ont pas pu être ouvertes directement. L'algorithme de calcul n'y est pas décrit.</small></li>
+  <li id="r30"><span class="tag-ok">✔ vérifiée</span> Daqri LLC (aujourd'hui RPX Corporation). <em>Electrode contact quality</em>. Demande de brevet US 2016/0374616 A1, publiée le 29 décembre 2016 (abandonnée).
+    <a href="https://patents.google.com/patent/US20160374616A1/en" target="_blank" rel="noopener">Google Patents</a> — Qualité de contact par le coefficient de variation de la dérivée du signal, entre deux seuils fixés expérimentalement (non publiés). Cité pour comparaison : <strong>ce n'est pas la méthode de Muse</strong>.</li>
+</ol>
+
+<h2 id="filtrage">I. Amélioration du signal</h2>
+<ol class="refs" start="31">
+  <li id="r31"><span class="tag-ok">✔ vérifiée</span> Bristow-Johnson R. <em>Audio EQ Cookbook</em>. W3C Working Group Note, 8 juin 2021.
+    <a href="https://www.w3.org/TR/audio-eq-cookbook/" target="_blank" rel="noopener">w3.org/TR/audio-eq-cookbook</a> — Formules des filtres biquad (passe-bas, passe-haut, coupe-bande) utilisées par <code>Biquad.design</code>.</li>
+  <li id="r32"><span class="tag-ok">✔ vérifiée</span> Pearson R. K. (2002). Outliers in process modeling and identification. <em>IEEE Transactions on Control Systems Technology</em>, 10(1), 55–63. — Identifiant de Hampel (médiane et MAD) pour détecter les valeurs aberrantes.</li>
+  <li id="r33"><span class="tag-ok">✔ vérifiée</span> Widrow B. et al. (1975). Adaptive noise cancelling: principles and applications. <em>Proceedings of the IEEE</em>, 63, 1692–1716.
+    <a href="https://ieeexplore.ieee.org/document/1451965" target="_blank" rel="noopener">IEEE Xplore</a> — Annulation adaptative de bruit : une référence corrélée au parasite est filtrée puis soustraite.</li>
+  <li id="r34"><span class="tag-ok">✔ vérifiée</span> He P., Wilson G., Russell C. (2004). Removal of ocular artifacts from electro-encephalogram by adaptive filtering. <em>Medical &amp; Biological Engineering &amp; Computing</em>, 42, 407–412.
+    <a href="https://link.springer.com/article/10.1007/BF02344717" target="_blank" rel="noopener">Springer</a> — Retrait des artefacts oculaires par filtrage adaptatif avec des références EOG enregistrées séparément. <small>(Volume et pages cités de mémoire ; titre, auteurs, revue et année vérifiés.)</small></li>
+  <li id="r35"><span class="tag-ok">✔ vérifiée</span> Bertrand O., Perrin F., Pernier J. (1985). A theoretical justification of the average reference in topographic evoked potential studies. <em>Electroencephalography and Clinical Neurophysiology</em>, 62(6), 462–464. — Justification de la référence moyenne, qui suppose une couverture dense de la tête.</li>
+</ol>
+
+<h2 id="stockage">J. Stockage</h2>
+<ol class="refs" start="36">
+  <li id="r36"><span class="tag-ok">✔ vérifiée</span> W3C Web Applications Working Group. <em>Indexed Database API 3.0</em> (brouillon de travail ; les éditions 1.0 et 2.0 sont des recommandations W3C de 2015 et 2018).
+    <a href="https://www.w3.org/TR/IndexedDB/" target="_blank" rel="noopener">w3.org/TR/IndexedDB</a> — Base de données du navigateur utilisée par <code>lib/recorder.js</code> pour conserver les 30 dernières secondes.</li>
+</ol>
+
+<h2 id="normes">K. Formats et normes de données</h2>
+<ol class="refs" start="37">
+  <li id="r37"><span class="tag-ok">✔ vérifiée</span> BIDS. <em>Brain Imaging Data Structure — Electroencephalography</em> (spécification, version 1.10).
+    <a href="https://bids-specification.readthedocs.io/en/latest/modality-specific-files/electroencephalography.html" target="_blank" rel="noopener">bids-specification.readthedocs.io</a> — Nommage des fichiers, champs obligatoires de <code>*_eeg.json</code> (TaskName, EEGReference, SamplingFrequency, PowerLineFrequency, SoftwareFilters), colonnes de <code>*_channels.tsv</code>, types de canaux, unités (« uV »), formats recommandés (EDF, BrainVision).</li>
+  <li id="r38"><span class="tag-ok">✔ vérifiée</span> Kemp B. et al. <em>EDF+ specification</em>. European Data Format.
+    <a href="https://edfplus.info/specs/edfplus.html" target="_blank" rel="noopener">edfplus.info/specs/edfplus.html</a> — En-têtes (256 octets + 256 par signal), champ réservé « EDF+C », signal « EDF Annotations », listes d'annotations horodatées (TAL), échantillons 16 bits petit-boutistes.</li>
+  <li id="r39"><span class="tag-todo">à vérifier</span> Kemp B., Olivan J. (2003). European data format 'plus' (EDF+), an EDF alike standard format for the exchange of physiological data. <em>Clinical Neurophysiology</em>, 114(9), 1755–1761. — Article de référence d'EDF+.</li>
+  <li id="r40"><span class="tag-todo">à vérifier</span> Pernet C. R. et al. (2019). EEG-BIDS, an extension to the brain imaging data structure for electroencephalography. <em>Scientific Data</em>, 6, 103. — Article de référence de BIDS pour l'EEG.</li>
+</ol>
+
+<h2 id="etats">L. États mentaux</h2>
+<ol class="refs" start="41">
+  <li id="r41"><span class="tag-ok">✔ vérifiée</span> Pope A. T., Bogart E. H., Bartolome D. S. (1995). Biocybernetic system evaluates indices of operator engagement in automated task. <em>Biological Psychology</em>, 40, 187–195. — Indice d'engagement β/(α+θ) pour adapter l'automatisation à l'engagement de l'opérateur.</li>
+  <li id="r42"><span class="tag-ok">✔ vérifiée</span> Barry R. J. et al. (2007). EEG differences between eyes-closed and eyes-open resting conditions. <em>Clinical Neurophysiology</em>, 118, 2765–2773.
+    <a href="https://ro.uow.edu.au/hbspapers/1640" target="_blank" rel="noopener">ro.uow.edu.au</a> — Le niveau moyen d'alpha comme mesure de l'éveil au repos ; baisse de toutes les bandes à l'ouverture des yeux.</li>
+  <li id="r43"><span class="tag-ok">✔ vérifiée</span> Santamaria J., Chiappa K. H. (1987). <em>The EEG of Drowsiness</em>. New York : Demos (livre). — Effacement de l'alpha et montée du theta à l'endormissement ; yeux ouverts, l'apparition d'alpha peut signaler une baisse de vigilance.</li>
+</ol>
+
+<h2 id="fichiers">M. Fichiers sur le disque</h2>
+<ol class="refs" start="44">
+  <li id="r44"><span class="tag-todo">à vérifier</span> WICG. <em>File System Access</em> (spécification communautaire). <a href="https://wicg.github.io/file-system-access/" target="_blank" rel="noopener">wicg.github.io/file-system-access</a> — <code>showDirectoryPicker</code>, autorisations de lecture / écriture, poignées de dossier mémorisables : utilisés par <code>lib/sample-folder.js</code> pour écrire dans <code>muse2/echantillons</code>.</li>
+</ol>
+
+<h2 id="calibration-alpha">N. Calibration et rythme alpha</h2>
+<ol class="refs" start="45">
+  <li id="r45"><span class="tag-ok">✔ vérifiée</span> Berger H. (1929). Über das Elektrenkephalogramm des Menschen. <em>Archiv für Psychiatrie und Nervenkrankheiten</em>, 87, 527–570. — Premier EEG humain publié ; le rythme alpha diminue à l'ouverture des yeux (« effet de Berger »).</li>
+  <li id="r46"><span class="tag-ok">✔ vérifiée</span> Klimesch W. (1999). EEG alpha and theta oscillations reflect cognitive and memory performance: a review and analysis. <em>Brain Research Reviews</em>, 29(2–3), 169–195.
+    <a href="https://pubmed.ncbi.nlm.nih.gov/10209231/" target="_blank" rel="noopener">pubmed.ncbi.nlm.nih.gov/10209231</a> — Grandes différences individuelles de fréquence alpha ; propose de placer les bandes alpha et theta autour de la fréquence alpha individuelle (IAF).</li>
+  <li id="r47"><span class="tag-ok">✔ vérifiée</span> Corcoran A. W., Alday P. M., Schlesewsky M., Bornkessel-Schlesewsky I. (2018). Toward a reliable, automated method of individual alpha frequency (IAF) quantification. <em>Psychophysiology</em>, 55(7), e13064.
+    <a href="https://www.biorxiv.org/content/10.1101/176792v3" target="_blank" rel="noopener">biorxiv.org</a> — Estimation automatique de l'IAF au repos : pic (PAF) et centre de gravité (CoG) sur un spectre lissé.</li>
+</ol>
+
+<h2 id="fiabilite">O. Fiabilité des mesures</h2>
+<ol class="refs" start="48">
+  <li id="r48"><span class="tag-ok">✔ vérifiée</span> Goncharova I. I., McFarland D. J., Vaughan T. M., Wolpaw J. R. (2003). EMG contamination of EEG: spectral and topographical characteristics. <em>Clinical Neurophysiology</em>, 114, 1580–1593.
+    <a href="https://www.neurotechcenter.org/sites/default/files/misc/EMG%20contamination%20of%20EEG%20spectral%20and%20topographical%20characteristics.pdf" target="_blank" rel="noopener">PDF (neurotechcenter.org)</a> — L'EMG des muscles frontal et temporal s'étend de 0 à plus de 200 Hz, maximal vers 20–30 Hz au front et 40–80 Hz aux tempes : justifie le bêta 13–20 Hz et le témoin 30–45 Hz de l'état mental.</li>
+  <li id="r49"><span class="tag-ok">✔ vérifiée</span> Tenke C. E., Kayser J. (2001). A convenient method for detecting electrolyte bridges in multichannel electroencephalogram and event-related potential recordings. <em>Clinical Neurophysiology</em>, 112(3), 545–550.
+    <a href="https://psychophysiology.cpmc.columbia.edu/publications/tenke2001a" target="_blank" rel="noopener">psychophysiology.cpmc.columbia.edu</a> — Un excès de gel crée des ponts de faible impédance entre électrodes ; la différence de potentiel entre sites pontés devient anormalement faible. Appui du niveau « suspect » de la qualité de contact (le seuil de 3 µV, lui, est une estimation du projet).</li>
+  <li id="r50"><span class="tag-ok">✔ vérifiée</span> Rousseeuw P. J., Croux C. (1993). Alternatives to the median absolute deviation. <em>Journal of the American Statistical Association</em>, 88, 1273–1283.
+    <a href="https://doi.org/10.1080/01621459.1993.10476408" target="_blank" rel="noopener">doi:10.1080/01621459.1993.10476408</a> — Le MAD, estimateur robuste de dispersion, et sa constante 1,4826 qui le rend cohérent avec l'écart-type d'une loi normale : seuil personnel de l'état mental.</li>
+</ol>
+
+<h2 id="annotation-bids">P. Annotation de gestes</h2>
+<ol class="refs" start="51">
+  <li id="r51"><span class="tag-ok">✔ vérifiée</span> BIDS. <em>Task events</em> (spécification Brain Imaging Data Structure).
+    <a href="https://bids-specification.readthedocs.io/en/stable/modality-specific-files/task-events.html" target="_blank" rel="noopener">bids-specification.readthedocs.io</a> — Fichiers <code>*_events.tsv</code> : colonnes <code>onset</code> et <code>duration</code> obligatoires (secondes), <code>trial_type</code> facultative, colonnes supplémentaires libres à documenter dans un JSON associé : format des étiquettes du projet Annotation. Complète la réf. <a href="#r37">[37]</a>.</li>
+</ol>
+
+<h2 id="orientation-tete">Q. Orientation de la tête</h2>
+<ol class="refs" start="52">
+  <li id="r52"><span class="tag-ok">✔ vérifiée</span> Mahony R., Hamel T., Pflimlin J.-M. (2008). Nonlinear complementary filters on the special orthogonal group. <em>IEEE Transactions on Automatic Control</em>, 53(5), 1203-1217. doi:10.1109/TAC.2008.923738.
+    <a href="https://hal.archives-ouvertes.fr/hal-00488376" target="_blank" rel="noopener">hal-00488376</a> — Filtres complémentaires gyroscope + accéléromètre pour l'attitude, avec estimation du biais du gyroscope. Le filtre de ce projet en est une version simplifiée (angles d'Euler), pas ce filtre. Aucune source vérifiée pour les axes du Muse 2 (repère supposé).</li>
+</ol>
+
+<h2>Pistes pour aller plus loin</h2>
+<ul>
+  <li>Dépôt <em>muse-js</em> et sa documentation du protocole, pour les évolutions du casque.</li>
+  <li>Pour le traitement d'artefacts plus avancé (ICA, régression EOG) : <a href="#r16">[16]</a> et <a href="#r17">[17]</a>.</li>
+  <li>Pour une estimation spectrale plus stable : méthode de Welch <a href="#r14">[14]</a>.</li>
+</ul>
+
+</article>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "Name": "Muse 2 Lab - échantillons",
+  "BIDSVersion": "1.10.0",
+  "DatasetType": "raw",
+  "GeneratedBy": [
+    {
+      "Name": "Muse 2 Lab",
+      "Description": "Application web de projets autour du casque Muse 2"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Tests – Muse 2 Lab</title>
+<style>body{font:14px/1.5 monospace;padding:16px}.pass{color:#1f9d6a}.fail{color:#d64545;font-weight:bold}</style>
+</head>
+<body>
+<h1>Tests des briques lib/</h1>
+<p>Signaux synthétiques, aucun casque nécessaire. Ouvrir cette page dans un navigateur, ou en ligne de commande :
+<code>chrome --headless --allow-file-access-from-files --dump-dom tests/index.html</code></p>
+<pre id="out"></pre>
+<script>// Erreur de chargement d'un script (syntaxe, exception au premier niveau) : comptée comme échec par summary.js
+window.SCRIPT_ERRORS = [];
+window.addEventListener('error', (e) => SCRIPT_ERRORS.push(`${(e.filename || '').split('/').pop()}:${e.lineno} ${e.message}`));</script>
+<script src="../lib/profiles.js"></script>
+<script>Profiles.init({ prefix: 'muse2test' }); // jamais les vrais réglages</script>
+<script src="../lib/calibrations.js"></script>
+<script src="../lib/signal.js"></script>
+<script src="../lib/muse.js"></script>
+<script src="../lib/artifacts.js"></script>
+<script src="../lib/calibration.js"></script>
+<script src="../lib/contact.js"></script>
+<script src="../lib/head-pose.js"></script>
+<script src="../lib/filters.js"></script>
+<script src="../lib/simulator.js"></script>
+<script src="../lib/recording.js"></script>
+<script src="../lib/edf.js"></script>
+<script src="../lib/zip.js"></script>
+<script src="../lib/bids.js"></script>
+<script src="../lib/recorder.js"></script>
+<script src="../lib/mental-state.js"></script>
+<script src="../lib/calibration-context.js"></script>
+<script src="../lib/step-calibrator.js"></script>
+<script src="../lib/gaze-model.js"></script>
+<script src="../lib/alpha-calibration.js"></script>
+<script src="../lib/gaze-calibration.js"></script>
+<script src="../lib/mental-baseline.js"></script>
+<script src="../lib/gesture-challenge.js"></script>
+<script src="../lib/runner-game.js"></script>
+<script src="../lib/dynamic-calibration.js"></script>
+<script src="../lib/annotation-capture.js"></script>
+<script src="../lib/annotation.js"></script>
+<script src="../lib/server-dir.js"></script>
+<script src="../lib/sample-folder.js"></script>
+<script src="artifacts.test.js"></script>
+<script src="filters.test.js"></script>
+<script src="muse.test.js"></script>
+<script src="mental.test.js"></script>
+<script src="etude.test.js"></script>
+<script src="recorder.test.js"></script>
+<script src="profiles.test.js"></script>
+<script src="formats.test.js"></script>
+<script src="calibrations.test.js"></script>
+<script src="gaze.test.js"></script>
+<script src="jeu.test.js"></script>
+<script src="annotation.test.js"></script>
+<script src="head-pose.test.js"></script>
+<script src="summary.js"></script>
+</body>
+</html>

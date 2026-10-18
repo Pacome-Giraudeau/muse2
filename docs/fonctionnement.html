@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fonctionnement de l'app – Muse 2 Lab</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body>
+<article class="doc-page">
+<h1>Fonctionnement de l'app</h1>
+<p class="lead">Une vue d'ensemble, sans jargon inutile : avec quoi l'application est faite, comment elle est rangée et
+comment les données du casque arrivent jusqu'à l'écran. Pour comprendre <em>pourquoi</em> les traitements sont ce qu'ils sont, voir
+<a href="science.html">Comprendre la science</a> ; pour le détail du code, la
+<a href="../index.html#/dev/technique" target="_top">Documentation technique &amp; specs</a> (section Développement).</p>
+
+<nav class="toc">
+  <a href="#techno">1. Les technologies</a>
+  <a href="#trajet">2. Le trajet des données</a>
+  <a href="#rangement">3. Comment c'est rangé</a>
+  <a href="#navigation">4. Une seule page, plusieurs écrans</a>
+  <a href="#stockage">5. Ce qui est enregistré, et où</a>
+  <a href="#qualite">6. Tests et qualité</a>
+</nav>
+
+<h2 id="techno"><span class="num">1</span> Les technologies</h2>
+<p class="brief"><b>En bref.</b> Du web « à l'ancienne » : HTML, CSS et JavaScript, rien à installer ni à compiler.</p>
+<ul>
+  <li><strong>HTML, CSS, JavaScript pur.</strong> Pas de framework, pas de bibliothèque externe, pas d'étape de « build » : les fichiers écrits sont
+  ceux que le navigateur exécute. On peut même ouvrir <code>index.html</code> directement depuis le disque.</li>
+  <li><strong>Web Bluetooth</strong> : l'interface du navigateur (Chrome ou Edge) qui parle en Bluetooth Low Energy au casque Muse 2.
+  Aucun pilote, aucune application intermédiaire.</li>
+  <li><strong>Canvas</strong> : tous les tracés (signal, spectres, schéma de la tête, jeu) sont dessinés « à la main » dans le navigateur.</li>
+  <li><strong>Stockage du navigateur</strong> (<em>localStorage</em>, <em>IndexedDB</em>) pour les réglages personnels et la mémoire des dernières secondes de signal.</li>
+  <li><strong>Python</strong>, uniquement en coulisses : un petit serveur local facultatif (<code>serveur.py</code>) qui écrit les enregistrements dans un
+  dossier du disque, et des outils de développement (tests, captures). L'application elle-même n'en a pas besoin.</li>
+</ul>
+
+<h2 id="trajet"><span class="num">2</span> Le trajet des données</h2>
+<p class="brief"><b>En bref.</b> Le casque émet, le navigateur décode, des calculs sans interface transforment, des composants affichent.</p>
+<div class="flow">
+  <div><b>Casque Muse 2</b>4 capteurs EEG, mouvement, pouls</div><div class="arrow">→</div>
+  <div><b>Décodage</b>Bluetooth → nombres</div><div class="arrow">→</div>
+  <div><b>Calculs</b>filtres, artefacts, contact, état mental</div><div class="arrow">→</div>
+  <div><b>Affichage</b>tracés, voyants, jauges</div><div class="arrow">→</div>
+  <div><b>Pages</b>chaque projet assemble le tout</div>
+</div>
+<p>Le casque envoie en continu les mesures de ses quatre capteurs EEG (front et tempes), de son accéléromètre et de son capteur de pouls.
+L'application les décode, les nettoie (filtres), repère les « parasites » comme les clignements ou la mâchoire serrée (<em>artefacts</em>),
+estime la qualité du contact de chaque capteur, puis calcule les rythmes cérébraux et un indicateur d'état mental.
+Chaque page de l'application s'abonne à ce flux et en affiche la partie qui l'intéresse.</p>
+<p>Quand aucun casque n'est disponible, un <strong>simulateur</strong> fabrique un signal réaliste : la plupart des pages fonctionnent alors en démonstration.</p>
+
+<h2 id="rangement"><span class="num">3</span> Comment c'est rangé</h2>
+<p class="brief"><b>En bref.</b> Trois couches qui ne se mélangent pas : calcul, affichage, pages.</p>
+<table>
+  <tr><th>Dossier</th><th>Contenu</th><th>Règle</th></tr>
+  <tr><td><code>lib/</code></td><td>Le « cerveau » : casque, signal, filtres, artefacts, calibrations, états mentaux, enregistrement.</td><td>Aucun affichage : se teste sans écran.</td></tr>
+  <tr><td><code>ui/</code></td><td>Composants d'interface réutilisables (visionneuse de signal, schéma de la tête, panneaux, barre d'état…).</td><td>Que de l'affichage.</td></tr>
+  <tr><td><code>projets/</code></td><td>Une page par projet (capteurs en direct, filtres, état mental, étude, calibration, jeu…).</td><td>Assemble <code>lib/</code> et <code>ui/</code>.</td></tr>
+  <tr><td><code>app/</code></td><td>La « coquille » : routage entre les pages et catalogue des cartes de l'accueil.</td><td>Un fichier de colle, pas de logique métier.</td></tr>
+  <tr><td><code>docs/</code>, <code>dev/</code></td><td>Cette documentation, la documentation technique et les rapports critiques.</td><td>Pages statiques.</td></tr>
+  <tr><td><code>tests/</code>, <code>tools/</code></td><td>Tests automatiques et outils de développement.</td><td>Hors de l'application elle-même.</td></tr>
+</table>
+<p>Cette séparation permet de faire évoluer un projet sans toucher aux calculs, et d'améliorer un calcul (un filtre, une détection) pour toutes les pages à la fois.</p>
+
+<h2 id="navigation"><span class="num">4</span> Une seule page, plusieurs écrans</h2>
+<p class="brief"><b>En bref.</b> Changer d'écran ne recharge pas le navigateur, pour que la connexion Bluetooth reste ouverte.</p>
+<p>Toute l'application vit dans un seul document, <code>index.html</code>. Les « pages » sont des adresses de la forme <code>#/p/live</code>
+(projet), <code>#/d/science</code> (documentation) ou <code>#/dev/technique</code> (développement). La coquille détecte le changement d'adresse,
+range l'écran précédent proprement puis charge le suivant à la demande. Comme le navigateur ne recharge jamais la page, une connexion au casque
+établie une fois reste active d'un projet à l'autre. Le casque et l'enregistreur sont créés une seule fois et partagés par tous les projets.</p>
+<p>Les réglages propres à une personne (seuils de clignement, référence d'état mental…) sont rangés dans des <strong>profils</strong> : on peut en changer
+depuis le bandeau, chacun garde ses propres calibrations.</p>
+
+<h2 id="stockage"><span class="num">5</span> Ce qui est enregistré, et où</h2>
+<p class="brief"><b>En bref.</b> Rien ne quitte ta machine ; les enregistrements suivent une norme ouverte.</p>
+<ul>
+  <li><strong>Mémoire glissante</strong> : les 30 dernières secondes de signal sont gardées en permanence, pour pouvoir « figer » un moment intéressant après coup.</li>
+  <li><strong>Échantillons</strong> : un enregistrement est écrit dans le dossier <code>echantillons/</code> au format <strong>BIDS-EEG</strong> (norme de la recherche,
+  lisible par les logiciels d'analyse courants) ; la page « Étude d'échantillon » les relit, et l'export EDF+ est possible.</li>
+  <li><strong>Réglages</strong> : stockés dans le navigateur, par profil (le dossier d'enregistrement peut aussi être choisi à la main si on n'utilise pas le serveur local).</li>
+  <li>Aucun serveur distant, aucun compte, aucune donnée envoyée sur Internet.</li>
+</ul>
+
+<h2 id="qualite"><span class="num">6</span> Tests et qualité</h2>
+<p class="brief"><b>En bref.</b> Une commande vérifie tout.</p>
+<p>Les calculs ont des tests automatiques qui tournent dans un navigateur sans interface ; une même commande (<code>python tools/check.py</code>) charge ensuite
+chaque page pour y chercher des erreurs. Un <a href="../index.html#/dev/rapports" target="_top">rapport critique</a> daté fait régulièrement le point sur les forces et faiblesses.
+Ce qui n'a pas pu être testé avec un vrai casque est dit comme tel dans les pages concernées.</p>
+
+<p class="in-app">Pour aller plus loin : <a href="../index.html#/dev/technique" target="_top">Documentation technique &amp; specs</a> ·
+<a href="science.html">Comprendre la science</a> · <a href="sources.html">Sources</a>.</p>
+</article>
+</body>
+</html>

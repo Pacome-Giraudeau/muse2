@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muse 2 Lab</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="shell">
+<header class="shell-top">
+  <a class="brand" href="#/">🧠 Muse 2 Lab</a>
+  <nav>
+    <a data-nav href="#/">Accueil</a>
+    <a data-nav href="#/d/fonctionnement">Fonctionnement</a>
+    <a data-nav href="#/dev/technique">Technique</a>
+    <a data-nav href="#/d/science">Science</a>
+    <a data-nav href="#/d/sources">Sources</a>
+    <span id="sensor-check"></span>
+    <span id="profile-menu"></span>
+  </nav>
+  <div class="statusbar" id="statusbar"></div>
+</header>
+
+<main id="view" class="wrap"></main>
+
+<!-- Briques (lib/) puis composants (ui/) puis application (app/) : l'ordre compte -->
+<script src="lib/profiles.js"></script>
+<script src="lib/calibrations.js"></script>
+<script src="lib/signal.js"></script>
+<script src="lib/muse.js"></script>
+<script src="lib/artifacts.js"></script>
+<script src="lib/calibration.js"></script>
+<script src="lib/contact.js"></script>
+<script src="lib/head-pose.js"></script>
+<script src="lib/filters.js"></script>
+<script src="lib/simulator.js"></script>
+<script src="lib/recording.js"></script>
+<script src="lib/edf.js"></script>
+<script src="lib/zip.js"></script>
+<script src="lib/bids.js"></script>
+<script src="lib/recorder.js"></script>
+<script src="lib/mental-state.js"></script>
+<script src="lib/calibration-context.js"></script>
+<script src="lib/step-calibrator.js"></script>
+<script src="lib/gaze-model.js"></script>
+<script src="lib/alpha-calibration.js"></script>
+<script src="lib/gaze-calibration.js"></script>
+<script src="lib/mental-baseline.js"></script>
+<script src="lib/gesture-challenge.js"></script>
+<script src="lib/runner-game.js"></script>
+<script src="lib/dynamic-calibration.js"></script>
+<script src="lib/annotation-capture.js"></script>
+<script src="lib/annotation.js"></script>
+<script src="lib/server-dir.js"></script>
+<script src="lib/sample-folder.js"></script>
+<script src="ui/status-bar.js"></script>
+<script src="ui/head-map.js"></script>
+<script src="ui/head-3d.js"></script>
+<script src="ui/artifact-panel.js"></script>
+<script src="ui/gaze-target.js"></script>
+<script src="ui/gaze-stage.js"></script>
+<script src="ui/calibration-panel.js"></script>
+<script src="ui/calibration-stage.js"></script>
+<script src="ui/runner-stage.js"></script>
+<script src="ui/annotation-stage.js"></script>
+<script src="ui/pipeline-panel.js"></script>
+<script src="ui/sample-dialog.js"></script>
+<script src="ui/signal-viewer.js"></script>
+<script src="ui/sensor-check.js"></script>
+<script src="ui/profile-menu.js"></script>
+<script src="app/catalogue.js"></script>
+<script src="app/shell.js"></script>
+</body>
+</html>
